@@ -1,0 +1,37 @@
+/**
+ * src/styles/settings.scss
+ *
+ * Configures SASS variables and Vuetify overwrites
+ */
+
+// https://vuetifyjs.com/features/sass-variables/`
+// @use 'vuetify/settings' with (
+//   $color-pack: false
+// );
+* {
+  --dark-blue: #3953a4;
+  --light-blue: #98b9f2;
+  --grey: #cdd7d6;
+  --black: #121113;
+  --orange: #f87060;
+  --white: #f5f5f5;
+}
+
+html {
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden;
+  max-height: 100vh;
+  // background-color: white;
+}
+
+body > div:not(#app) {
+  opacity: 0;
+}
+
+// div {
+//   margin: 0 !important;
+//   padding: 0 !important;
+//   height: 100px !important;
+//   min-height: 100px !important;
+// }
