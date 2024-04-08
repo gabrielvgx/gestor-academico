@@ -1,5 +1,6 @@
 <template>
   <v-app>
+    <notifications :duration='2000' style='padding-top: 1rem' />
     <v-main>
       <router-view />
       <AppFooter />

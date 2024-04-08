@@ -1,15 +1,17 @@
 <template>
   <v-container class='ma-0 pa-0 w-100 h-100'>
     <v-img src="@/assets/background.svg" cover class='pa-0 login-bg'></v-img>
-    <v-form class="login-form">
+    <v-form class="login-form" ref="form">
       <v-card class="mx-auto pa-12 pb-8" elevation="8">
         <v-img src="@/assets/logo.svg" class="mb-12"></v-img>
-<!--
+
         <div class="text-subtitle-1 text-medium-emphasis">E-mail</div>
-        <v-text-field density="compact" placeholder="Digite seu e-mail" prepend-inner-icon="mdi-email-outline"
+        <v-text-field v-model="formData.email" :rules="rules" density="compact" placeholder="Digite seu e-mail" prepend-inner-icon="mdi-email-outline"
           variant="outlined"></v-text-field>
--->
-        <VTextInputField labeltext="E-mail" placeholder='Digite seu e-mail' prepend-inner-icon='mdi-email-outline'></VTextInputField>
+
+        <!-- <v-text-field v-model="formData.email" density="compact" placeholder="Digite seu e-mail" prepend-inner-icon="mdi-email-outline" -->
+          <!-- variant="outlined" :rules="rules"></v-text-field> -->
+        <!-- <VTextInputField v-model="formData.email" :rules="rules" labeltext="E-mail" placeholder='Digite seu e-mail' prepend-inner-icon='mdi-email-outline'></VTextInputField> -->
 
 
         <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
@@ -19,11 +21,11 @@
             Esqueceu sua senha?</a>
         </div>
 
-        <v-text-field :append-inner-icon="visible ? 'mdi-eye' : 'mdi-eye-off'" :type="visible ? 'text' : 'password'"
+        <v-text-field v-model="formData.password" :rules="rules" :append-inner-icon="visible ? 'mdi-eye' : 'mdi-eye-off'" :type="visible ? 'text' : 'password'"
           density="compact" placeholder="Digite sua senha" prepend-inner-icon="mdi-lock-outline" variant="outlined"
           @click:append-inner="visible = !visible"></v-text-field>
 
-        <VButton class="mb-8" size="large" variant="flat" block>
+        <VButton class="mb-8" size="large" variant="flat" block @click="login">
           Entrar
         </VButton>
 
@@ -34,17 +36,40 @@
 <script lang="js">
 import { ref } from 'vue';
 import VButton from '@/components/VButton.vue';
-import VTextInputField from '@/components/VTextInputField.vue';
+import Rule from '@/util/Rule';
+import Login from '@/controllers/Login';
 
 export default {
   name: 'login-page',
   components: {
     VButton,
-    VTextInputField,
+  },
+  methods: {
+    async login() {
+      const isValid = await this.$refs.form.validate();
+      if (isValid) {
+        console.log(this.formData, isValid);
+        Login.auth(this.formData).then(result => {
+          // if (result) {
+            location.pathname = '/school-select';
+          // }
+        });
+      }
+    },
   },
   setup() {
     const visible = ref(false);
-    return { visible }
+    const formData = ref({
+      email: null,
+      password: null,
+    });
+    return {
+      visible,
+      rules: [
+        Rule.required(),
+      ],
+      formData,
+    }
   }
 }
 </script>

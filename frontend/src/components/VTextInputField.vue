@@ -8,13 +8,14 @@
     :variant="variant || 'outlined'"
     :placeholder="placeholder || ''"
     :prepend-inner-icon="prependInnerIcon || ''"
+    :rules="rules || []"
   >
     <slot></slot>
   </v-text-field>
 </template>
 <script lang='js'>
 export default {
-  props: ['density', 'variant', 'labeltext', 'placeholder', 'prepend-inner-icon'],
+  props: ['density', 'variant', 'labeltext', 'placeholder', 'prepend-inner-icon', 'rules'],
   setup() {
   }
 }
