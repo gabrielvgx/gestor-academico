@@ -6,26 +6,39 @@
         <v-img src="@/assets/logo.svg" class="mb-12"></v-img>
 
         <div class="text-subtitle-1 text-medium-emphasis">E-mail</div>
-        <v-text-field v-model="formData.email" :rules="rules" density="compact" placeholder="Digite seu e-mail" prepend-inner-icon="mdi-email-outline"
-          variant="outlined"></v-text-field>
-
-        <!-- <v-text-field v-model="formData.email" density="compact" placeholder="Digite seu e-mail" prepend-inner-icon="mdi-email-outline" -->
-          <!-- variant="outlined" :rules="rules"></v-text-field> -->
-        <!-- <VTextInputField v-model="formData.email" :rules="rules" labeltext="E-mail" placeholder='Digite seu e-mail' prepend-inner-icon='mdi-email-outline'></VTextInputField> -->
-
+        <v-text-field
+          tabindex="1"
+          v-model="formData.email"
+          :rules="rules"
+          density="compact"
+          placeholder="Digite seu e-mail"
+          prepend-inner-icon="mdi-email-outline"
+          variant="outlined"
+          autocomplete="username"
+        ></v-text-field>
 
         <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
           Senha
 
-          <a class="text-caption text-decoration-none text-primary" href="#" rel="noopener noreferrer" target="_blank">
+          <a tabindex="4" class="text-caption text-decoration-none text-primary" href="#" rel="noopener noreferrer" target="_blank">
             Esqueceu sua senha?</a>
         </div>
 
-        <v-text-field v-model="formData.password" :rules="rules" :append-inner-icon="visible ? 'mdi-eye' : 'mdi-eye-off'" :type="visible ? 'text' : 'password'"
-          density="compact" placeholder="Digite sua senha" prepend-inner-icon="mdi-lock-outline" variant="outlined"
-          @click:append-inner="visible = !visible"></v-text-field>
+        <v-text-field
+          tabindex="2"
+          v-model="formData.password"
+          :rules="rules"
+          :append-inner-icon="visible ? 'mdi-eye' : 'mdi-eye-off'"
+          :type="visible ? 'text' : 'password'"
+          density="compact"
+          placeholder="Digite sua senha"
+          prepend-inner-icon="mdi-lock-outline"
+          variant="outlined"
+          @click:append-inner="visible = !visible"
+          autocomplete="current-password"
+        ></v-text-field>
 
-        <VButton class="mb-8" size="large" variant="flat" block @click="login">
+        <VButton tabindex="3" class="mt-8" size="large" block @click="login">
           Entrar
         </VButton>
 
@@ -46,14 +59,13 @@ export default {
   },
   methods: {
     async login() {
-      const isValid = await this.$refs.form.validate();
-      if (isValid) {
-        console.log(this.formData, isValid);
-        Login.auth(this.formData).then(result => {
-          // if (result) {
-            location.pathname = '/school-select';
-          // }
-        });
+      try {
+        const { valid } = await this.$refs.form.validate();
+        if (!valid) return;
+        await Login.auth(this.formData);
+        this.$router.push({ path: 'school-select' });
+      } catch (err) {
+        console.error(err);
       }
     },
   },

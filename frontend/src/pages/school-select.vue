@@ -36,7 +36,6 @@ export default {
     async login() {
       const isValid = await this.$refs.form.validate();
       if (isValid) {
-        console.log(this.formData, isValid);
         Login.auth(this.formData);
       }
     },

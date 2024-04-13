@@ -1,17 +1,20 @@
 import Alert from "@/util/Alert";
+import { Messages } from "@/util/Messages";
+import Request from "@/util/Request";
 
 class Login {
-  //todo Implementar rotina comunicando com backend para login
+
   async auth(formData) {
-    console.log(formData.email);
-    if(formData.email === 'error') { // demonstracao de erro
-      Alert.showError('AUTH_FAIL');
-    } else if (formData.email === 'error_not_found') {
-      Alert.showError('USER_NOT_FOUND');
-    } else {
-      return true;
+    try {
+      const { user } = await Request.post('/auth', formData);
+      localStorage.setItem('ID', user.ID);
+      localStorage.setItem('token', Date.now().toString());
+    } catch (err) {
+      console.log(err);
+      const message = Messages[err.message] || 'AUTH_FAIL';
+      Alert.showError(message);
+      return Promise.reject(err);
     }
-    return false;
   }
 }
 
