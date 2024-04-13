@@ -15,6 +15,7 @@
   --black: #121113;
   --orange: #f87060;
   --white: #f5f5f5;
+  --v-input-padding-top: 6px;
 }
 
 html {
@@ -39,3 +40,46 @@ body > div:not(#app) {
 //   height: 100px !important;
 //   min-height: 100px !important;
 // }
+
+.required:not(.v-select)::after {
+  content: ' *';
+  color: red;
+}
+
+.required.v-select .v-label::after {
+  content: ' *';
+  color: red;
+}
+
+.v-field-label,
+.v-field-label--floating {
+  opacity: 1;
+}
+
+.generic-form {
+  margin-top: auto;
+  margin-bottom: auto;
+  max-width: max(50vh, 300px);
+  min-width: 30vw;
+  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+  margin-left: 30px;
+  margin-right: 30px;
+}
+.generic-container {
+  justify-content: center;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  // align-items: start;
+}
+
+.form-title {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
