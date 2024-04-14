@@ -14,6 +14,7 @@ import AppFooter from './components/AppFooter.vue';
 </script>
 <style lang="scss" scoped>
 .v-footer {
+  height: 30px;
   position: absolute;
   bottom: 0;
   width: 100vw;

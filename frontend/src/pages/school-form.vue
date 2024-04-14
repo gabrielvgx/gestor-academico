@@ -69,8 +69,4 @@ export default {
 }
 </script>
 <style lang="scss">
-.form-body {
-  overflow-y: auto;
-  max-height: 75vh;
-}
 </style>

@@ -7,12 +7,18 @@
 // Styles
 import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify/styles'
-
+// import DateFnsAdapter from '@date-io/date-fns';
 // Composables
 import { createVuetify } from 'vuetify'
 
 // https://vuetifyjs.com/en/introduction/why-vuetify/#feature-guides
 export default createVuetify({
+  date: {
+    // adapter: DateFnsAdapter,
+    locale: {
+      pt: 'BR',
+    }
+  },
   theme: {
     defaultTheme: 'light',
     themes: {
