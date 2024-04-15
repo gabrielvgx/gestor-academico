@@ -63,7 +63,7 @@ export default {
         const { valid } = await this.$refs.form.validate();
         if (!valid) return;
         await Login.auth(this.formData);
-        this.$router.push({ path: 'school-select' });
+        this.$router.push({ path: '/dashboard' });
       } catch (err) {
         console.error(err);
       }

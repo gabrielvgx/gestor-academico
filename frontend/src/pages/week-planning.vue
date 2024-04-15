@@ -64,6 +64,14 @@
           </v-locale-provider>
         </div>
         <div>
+          <div class="text-subtitle-1 required">Escola</div>
+          <v-select
+            :items="['EMEI Alto Vera Cruz', 'EMEI Teste1', 'EMEI Teste2',]"
+            density="compact"
+            variant="outlined"
+          ></v-select>
+        </div>
+        <div>
           <div class="text-subtitle-1 required">Turma</div>
           <v-select
             :items="['Turma dos Amigos 5/6 Anos', 'Turma Beija Flor 3/4 Anos',]"

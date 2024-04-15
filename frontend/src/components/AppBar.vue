@@ -9,7 +9,7 @@
     >
       <v-icon v-if="!useMobileMenu" color="black">mdi-school</v-icon>
       <span v-if="useMobileMenu">
-        {{ getPageTitle() }}
+        {{ pageTitle }}
       </span>
       <span v-else>Gestor Acadêmico</span>
     </router-link>
@@ -57,8 +57,10 @@
   </v-app-bar>
 </template>
 <script lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
+import { useRoute } from 'vue-router';
 import { EventModule } from '@/util/EventModule.js';
+import MenuConfig from '@/MenuConfig.js';
 
 export default {
   emits: ['click'],
@@ -87,32 +89,34 @@ export default {
     }
   },
   setup() {
+    const route = useRoute();
     const isConnected = ref(false);
     const isDevEnv = ref(false);
     const notificationCount = ref(0);
+    const pageTitle = ref(MenuConfig.getPageName(route.path));
     const submenus = [
       {
-        title: 'Servidor do Control',
+        title: 'Configurações',
         name: 'server-control',
         icon: 'mdi-cogs',
       },
-      {
-        title: 'Banco de Dados',
-        name: 'database-control',
-        icon: 'mdi-database-settings',
-      },
-      {
-        title: 'Variáveis de Ambiente',
-        name: 'environment-control',
-        icon: 'mdi-code-tags',
-      },
     ];
+    const onChangePage = ({ path }) => {
+      pageTitle.value = MenuConfig.getPageName(path);
+    };
+    onMounted(() => {
+      EventModule.on('change-page', onChangePage);
+    });
+    onUnmounted(() => {
+      EventModule.off('change-page', onChangePage);
+    });
     return {
       submenus,
       isConnected,
       isDevEnv,
       notificationCount,
       useMobileMenu: window.document.body.clientWidth < 500,
+      pageTitle,
     };
   },
 };

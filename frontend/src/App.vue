@@ -3,8 +3,8 @@
     <notifications :duration='2000' style='padding-top: 1rem' />
     <MobileMenu v-if="useMobileMenu" :items="menuItems" />
     <v-container class='container-app'>
-      <Menu v-if="!useMobileMenu" :items="menuItems"></Menu>
-      <AppBar />
+      <WebMenu v-if="!useMobileMenu" :items="menuItems"></WebMenu>
+      <AppBar v-if="showAppBar()" />
       <v-main class="pa-0">
         <router-view />
       </v-main>
@@ -13,46 +13,36 @@
   </v-app>
 </template>
 
-<script setup>
+<script lang="js">
 import AppFooter from './components/AppFooter.vue';
 import AppBar from './components/AppBar.vue';
-import Menu from './components/Menu.vue';
+import WebMenu from './components/Menu.vue';
 import MobileMenu from './components/MobileMenu.vue';
-  //
-const useMobileMenu = window.document.body.clientWidth < 500;
-const menuItems = [
-  {
-    name: 'home-page',
-    label: 'Início',
-    icon: 'mdi-home',
-    isMainPage: true,
-    href: '/dashboard',
+import MenuConfig from '@/MenuConfig.js';
+import App from '@/util/App.js';
+
+export default {
+  components: {
+    AppBar,
+    AppFooter,
+    WebMenu,
+    MobileMenu,
   },
-  {
-    name: 'week-planning',
-    label: 'Planejamento Semanal',
-    icon: 'mdi-book-alphabet',
-    href: '/week-planning',
+  methods: {
+    showAppBar() {
+      this.$router.afterEach(params => console.log(params));
+      return !(['/', '/login'].includes(this.$route.path));
+    }
   },
-  {
-    name: 'add-users',
-    label: 'Cadastrar usuário',
-    icon: 'mdi-account-plus',
-    href: '/user-form',
-  },
-  {
-    name: 'add-school',
-    label: 'Cadastrar escola / turma',
-    icon: 'mdi-home-plus',
-    href: '/school-form',
-  },
-  {
-    name: 'material-request',
-    label: 'Solicitar material',
-    icon: 'mdi-toy-brick-plus',
-    href: '/material-request',
-  },
-]
+  setup() {
+    const useMobileMenu = App.isMobile();
+    const menuItems = MenuConfig.getAll();
+    return {
+      useMobileMenu,
+      menuItems,
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
 .v-footer {

@@ -50,7 +50,7 @@ body > div:not(#app) {
 }
 
 .generic-form {
-  margin-top: auto;
+  margin-top: calc(var(--header-size) + 1rem);
   margin-bottom: auto;
   max-width: max(50vh, 300px);
   min-width: 30vw;
@@ -91,8 +91,8 @@ body > div:not(#app) {
   }
 }
 
-// @media screen and (min-height: 900px) {
-//   .form-body {
-//     max-height: 80vh;
-//   }
-// }
+@media screen and (max-width: 500px) {
+  .form-title {
+    display: none !important;
+  }
+}

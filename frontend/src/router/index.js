@@ -6,6 +6,7 @@
  */
 
 // Composables
+import { EventModule } from '@/util/EventModule';
 import { createRouter, createWebHistory } from 'vue-router/auto'
 
 const router = createRouter({
@@ -20,6 +21,12 @@ router.beforeEach((to, from, next) => {
   } else {
     next();
   }
+});
+
+router.afterEach((params) => {
+  const { path } = params;
+  console.log(params);
+  EventModule.emit('change-page', { path });
 });
 
 export default router
