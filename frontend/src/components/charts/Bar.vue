@@ -5,7 +5,7 @@
 <script lang="js">
 import { use } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
-import { BarChart } from 'echarts/charts';
+import { BarChart, LineChart } from 'echarts/charts';
 import {
   TitleComponent,
   TooltipComponent,
@@ -19,6 +19,7 @@ import VChart from 'vue-echarts';
 import { ref } from 'vue';
 
 use([
+  LineChart,
   MarkPointComponent,
   MarkLineComponent,
   CanvasRenderer,

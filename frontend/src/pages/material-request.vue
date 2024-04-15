@@ -32,15 +32,14 @@
         </div>
         <div>
           <v-autocomplete
-          class="required"
-          :rules="rules"
-          label="Material"
-          :items="['Caneta', 'Giz de Cera', 'Cartolina', 'Massinha de Modelar']"
-          density="comfortable"
-          variant="underlined"
-        com
-          multiple
-          chips
+            class="required"
+            :rules="rules"
+            label="Material"
+            :items="['Caneta', 'Giz de Cera', 'Cartolina', 'Massinha de Modelar']"
+            density="comfortable"
+            variant="underlined"
+            multiple
+            chips
           ></v-autocomplete>
         </div>
         <div>

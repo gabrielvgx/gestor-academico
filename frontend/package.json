@@ -15,6 +15,7 @@
     "core-js": "^3.34.0",
     "date-fns": "^3.6.0",
     "echarts": "^5.5.0",
+    "mitt": "^3.0.1",
     "roboto-fontface": "*",
     "vue": "^3.3.0",
     "vue-echarts": "^6.6.9",
