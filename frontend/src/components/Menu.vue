@@ -102,7 +102,7 @@ export default {
 }
 
 .menu-app {
-  margin-top: var(--header-size);
+  padding-top: 0.75rem;
 }
 
 .menu-app div.v-tooltip__content.menuable__content__active {
@@ -127,12 +127,10 @@ export default {
   padding-right: 0.5rem;
   box-shadow: 4px 0 5px -4px #888;
 
-  // .active-menu a > span.v-btn__content {
-  //   color: var(--v-primary-base) !important;
-  // }
-  .active-menu {
+  .active-menu > .menu-link {
     background-color: var(--v-primary-base) !important;
     color: var(--white) !important;
+    border-radius: 0.25rem;
   }
 
   li::marker {
@@ -151,18 +149,6 @@ export default {
     color: var(--zd-font-color) !important;
   }
 
-  // .v-btn {
-  //   text-transform: none;
-  // }
-
-  .menu-slot {
-    padding: 0.5rem;
-    border-radius: 0.25rem;
-  }
-
-  .menu-slot:first-child {
-    margin-top: 0.75rem;
-  }
   .menu-slot:hover {
     background-color: var(--selected-bg-color);
     border-radius: 5px;
@@ -211,10 +197,12 @@ export default {
     background-color: var(--selected-bg-color);
     border-radius: 0.25rem;
   }
-  // .menu-link {
-  //   padding: 0.5rem;
-  //   border-radius: 0.25rem;
-  // }
+  .menu-link {
+    padding: 0.5rem;
+  }
+  .menu-slot {
+    display: flex;
+  }
 }
 
 </style>

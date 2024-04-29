@@ -1,7 +1,9 @@
 <template>
-  <v-container class='user-container generic-container'>
-    <!-- <Pie :options="planningGraphOption"></Pie> -->
-    <Bar :options="{}"></Bar>
+  <v-container class='generic-container'>
+    <div class="graph-list w-100 h-100">
+      <Pie :options="planningGraphOption"></Pie>
+      <Bar :options="{}"></Bar>
+    </div>
   </v-container>
 </template>
 <script lang="js">
@@ -30,4 +32,7 @@ export default {
 }
 </script>
 <style lang="scss">
+.graph-list {
+  overflow-y: auto;
+}
 </style>

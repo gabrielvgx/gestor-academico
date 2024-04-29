@@ -46,7 +46,6 @@ import { onUnmounted, onMounted, ref } from 'vue';
       const menuItems = ref(props.items);
       const openMenu = () => {
         drawer.value = true;
-        console.log('tesste');
       };
       onMounted(() => {
         EventModule.on('open-menu', openMenu);

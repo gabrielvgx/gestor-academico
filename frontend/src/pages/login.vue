@@ -1,9 +1,9 @@
 <template>
   <v-container class='ma-0 pa-0 w-100 h-100'>
-    <v-img src="@/assets/background.svg" cover class='pa-0 login-bg'></v-img>
+    <v-img src="@/assets/background.webp" cover class='pa-0 login-bg'></v-img>
     <v-form class="login-form" ref="form">
       <v-card class="mx-auto pa-12 pb-8" elevation="8">
-        <v-img src="@/assets/logo.svg" class="mb-12"></v-img>
+        <v-img src="@/assets/logo.svg" class="mb-8"></v-img>
 
         <div class="text-subtitle-1 text-medium-emphasis">E-mail</div>
         <v-text-field
@@ -38,7 +38,7 @@
           autocomplete="current-password"
         ></v-text-field>
 
-        <VButton tabindex="3" class="mt-8" size="large" block @click="login">
+        <VButton tabindex="3" class="mt-5" size="large" block @click="login" :loading="loginLoader">
           Entrar
         </VButton>
 
@@ -62,7 +62,8 @@ export default {
       try {
         const { valid } = await this.$refs.form.validate();
         if (!valid) return;
-        await Login.auth(this.formData);
+        this.loginLoader = true;
+        await Login.auth(this.formData).finally(() => this.loginLoader = false);
         this.$router.push({ path: '/dashboard' });
       } catch (err) {
         console.error(err);
@@ -71,12 +72,14 @@ export default {
   },
   setup() {
     const visible = ref(false);
+    const loginLoader = ref(false);
     const formData = ref({
       email: null,
       password: null,
     });
     return {
       visible,
+      loginLoader,
       rules: [
         Rule.required(),
       ],
@@ -85,7 +88,7 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .login-bg {
   position: absolute;
   width: 100vw;

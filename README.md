@@ -16,3 +16,5 @@ Gráficos:
   - Entregue atrasado
   - Não entreguee
     https://echarts.apache.org/examples/en/editor.html?c=pie-simple
+- Análise por usuário (histórico de entregas)
+- Análise por usuário (histórico de solicitação de materiais)

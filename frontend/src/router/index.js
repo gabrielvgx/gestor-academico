@@ -25,7 +25,6 @@ router.beforeEach((to, from, next) => {
 
 router.afterEach((params) => {
   const { path } = params;
-  console.log(params);
   EventModule.emit('change-page', { path });
 });
 

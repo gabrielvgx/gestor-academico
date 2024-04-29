@@ -35,9 +35,9 @@
         </template>
       </v-menu>
       <v-menu>
-        <template v-slot:activator="{ props: menu }">
+        <!-- <template v-slot:activator="{ props: menu }">
           <v-btn v-bind="menu" icon="mdi-dots-vertical"></v-btn>
-        </template>
+        </template> -->
         <v-card>
           <v-list>
             <v-list-item
@@ -66,7 +66,6 @@ export default {
   emits: ['click'],
   methods: {
     openMenu() {
-      console.log('teste');
       EventModule.emit('open-menu');
     },
     appBarClick(submenuItem) {

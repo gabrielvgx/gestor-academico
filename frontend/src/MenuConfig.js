@@ -30,6 +30,18 @@ const config = [
     icon: 'mdi-toy-brick-plus',
     href: '/material-request',
   },
+  {
+    name: 'food-record',
+    label: 'Registro Alimentar',
+    icon: 'mdi-food-fork-drink',
+    href: '/food-record'
+  },
+  {
+    name: 'settings',
+    label: 'Parametrização do Sistema',
+    icon: 'mdi-cogs',
+    href: '/settings'
+  },
 ];
 
 class MenuConfig {
@@ -40,7 +52,6 @@ class MenuConfig {
 
   getPageName(path) {
     const menu = this.getAll().find(row => row.href === path);
-    console.log(path);
     return menu ? menu.label : 'Início';
   }
 }

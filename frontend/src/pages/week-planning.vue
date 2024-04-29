@@ -173,15 +173,9 @@ export default {
       }
       selectedDates.push(startDate);
       let curDate = startDate;
-      let count = 0;
       while (!isFriday(curDate)) {
         curDate = add(curDate, { days: 1 });
         selectedDates.push(curDate);
-        count++;
-        if (count > 10) {
-          console.log('infinity-loop', selectedDate);
-          break;
-        }
       }
       this.formData.planningDate = selectedDates;
     },
