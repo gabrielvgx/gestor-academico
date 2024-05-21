@@ -26,4 +26,8 @@ class DB implements IDataBase {
   function fetch($sql, $params = []) {
     return $this->instance->fetch($sql, $params);
   }
+
+  function execute($sql, $params = []) {
+    return $this->instance->execute($sql, $params);
+  }
 }

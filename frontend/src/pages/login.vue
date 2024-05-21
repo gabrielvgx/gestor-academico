@@ -37,11 +37,13 @@
           @click:append-inner="visible = !visible"
           autocomplete="current-password"
         ></v-text-field>
-
-        <VButton tabindex="3" class="mt-5" size="large" block @click="login" :loading="loginLoader">
+        <VButton tabindex="3" size="large" block @click="login" :loading="loginLoader">
           Entrar
         </VButton>
-
+        <v-row class="px-3 mt-5 align-center justify-center">
+          <div id="g_id_onload"></div>
+          <div class="g_id_signin"></div>
+        </v-row>
       </v-card>
     </v-form>
   </v-container>
@@ -58,6 +60,9 @@ export default {
     VButton,
   },
   methods: {
+    googleAuth() {
+      console.log('googleAuth');
+    },
     async login() {
       try {
         const { valid } = await this.$refs.form.validate();

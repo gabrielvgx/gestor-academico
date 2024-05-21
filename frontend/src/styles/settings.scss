@@ -16,10 +16,26 @@
   --black: #121113;
   --orange: #f87060;
   --white: #f5f5f5;
+
   --v-input-padding-top: 6px;
   --header-size: 64px;
   --footer-size: 35px;
   --menu-size: 40px;
+
+  --default-margin: 0.75rem;
+
+  --md-modal-width: clamp(450px, 70%, 900px);
+  --default-modal-width: auto;
+  --modal-footer-height: 60px;
+}
+
+.modal-actions {
+  position: fixed;
+  bottom: 1px;
+  // width: calc(100% - (2 * var(--default-margin)));
+  width: 100%;
+  left: 0;
+  background-color: #f5f5f5;
 }
 
 html {
@@ -125,4 +141,10 @@ body > div:not(#app) {
 
 // .v-application__wrap {
 //   overflow: hidden;
+// }
+
+// #g_id_onload,
+// .g_id_signin {
+//   min-width: 200px;
+//   min-height: 40px;
 // }

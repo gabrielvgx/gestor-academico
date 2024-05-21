@@ -6,9 +6,9 @@ class Login {
 
   async auth(formData) {
     try {
-      const { user } = await Request.post('/auth', formData);
+      const { user, token } = await Request.post('/auth', formData);
       localStorage.setItem('ID', user.ID);
-      localStorage.setItem('token', Date.now().toString());
+      localStorage.setItem('token', token);
     } catch (err) {
       console.log(err);
       const message = Messages[err.message] || 'AUTH_FAIL';

@@ -53,7 +53,7 @@ class Request {
     const endPointSanitized = Request.removeStartEndBar(endPoint);
     const URI = endPoint.includes('http') ? endPoint : `${serverUri}/${endPointSanitized}`;
     const { method, data, headers = {} } = options;
-    const token = localStorage.getItem('control-auth-token');
+    const token = localStorage.getItem('token');
     const defaultHeaders = {
       'Content-Type': 'application/json',
       // 'Authorization': '',

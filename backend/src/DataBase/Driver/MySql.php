@@ -57,4 +57,20 @@ class MySql implements IDataBase {
     }
     return $result->fetch_all(MYSQLI_ASSOC);
   }
+
+  function execute($sql, $params = []) {
+    $conn = $this->connect();
+    $stmt = $conn->prepare($sql);
+    if (!empty($params)) {
+      $types = $this->getParamTypes($params);
+      $stmt->bind_param($types, ...$params);
+    }
+    $result = $stmt->execute();
+    $stmt->close();
+    $conn->close();
+    if ($result === false) {
+      throw new \Exception("ERROR_EXECUTE_QUERY: $sql | PARAMS: $params");
+    }
+    return $result;
+  }
 }

@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Provider\User;
 use App\Util\ResponseHandler;
+use App\Util\JWT;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -27,8 +28,10 @@ class Login {
           throw new \Exception('INVALID_EMAIL_PASSWORD');
         }
 
+        $userData = $this->getUserData($result[0]);
         return ResponseHandler::success($response, [
-          'user' => $this->getUserData($result[0])
+          'user' => $userData,
+          'token' => JWT::generate($userData),
         ]);
 
       } catch (\Exception $err) {

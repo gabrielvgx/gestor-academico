@@ -39,7 +39,8 @@ $app->setBasePath((function () {
 })());
 
 // Register routes
-
+$auth = new \App\Middleware\Auth();
+$auth->register($app);
 (require __DIR__ . '/routes.php')($app);
 
 

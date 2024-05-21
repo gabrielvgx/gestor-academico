@@ -1,5 +1,5 @@
 <template>
-  <v-chart class='chart' :option='option' />
+  <v-chart class='chart' :option='option' @selectchanged="onSelectChanged" />
 </template>
 
 <script lang="js">
@@ -27,6 +27,17 @@ export default {
     VChart,
   },
   props: ['options'],
+  emits: ['onSelect'],
+  methods: {
+    onSelectChanged(eventInfo) {
+      if (eventInfo.fromActionPayload) {
+        this.$emit('onSelect', {
+          event: eventInfo,
+          data: this.options.data[eventInfo.fromActionPayload.dataIndexInside],
+        })
+      }
+    }
+  },
   setup(props) {
     const {
       titleText,
@@ -47,11 +58,12 @@ export default {
       legend: {
         orient: 'vertical',
         left: 'left',
+        top: 30,
         data: legendData || [],
       },
       series: [
         {
-          name: 'Traffic Sources',
+          name: 'Planejamentos',
           type: 'pie',
           radius: '55%',
           center: ['50%', '60%'],

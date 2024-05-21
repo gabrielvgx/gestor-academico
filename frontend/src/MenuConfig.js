@@ -14,9 +14,9 @@ const config = [
   },
   {
     name: 'add-users',
-    label: 'Cadastrar usuário',
-    icon: 'mdi-account-plus',
-    href: '/user-form',
+    label: 'Usuários',
+    icon: 'mdi-account',
+    href: '/user',
   },
   {
     name: 'add-school',

@@ -7,7 +7,9 @@
 // Plugins
 import { registerPlugins } from '@/plugins'
 import Notifications from '@kyvg/vue3-notification';
+import GoogleAuth from '@/util/GoogleAuth';
 
+GoogleAuth.register();
 // Components
 import App from './App.vue'
 

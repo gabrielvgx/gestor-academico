@@ -2,7 +2,7 @@
   <v-app>
     <notifications :duration='2000' style='padding-top: 1rem' />
     <MobileMenu v-if="useMobileMenu" :items="menuItems" />
-    <v-container :class='`container-app ${isAfterLogin ? "after-login" : ""}`'>
+    <v-container :class='`container-app ${isAfterLogin ? "after-login" : ""}`' style="flex-direction: row-reverse">
       <WebMenu v-if="!useMobileMenu && isAfterLogin" :items="menuItems"></WebMenu>
       <AppBar v-if="isAfterLogin" />
       <v-main :class='`pa-0 ${isAfterLogin ? "after-login" : ""}`'>

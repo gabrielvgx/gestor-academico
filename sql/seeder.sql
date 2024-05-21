@@ -30,7 +30,11 @@ VALUES
 INSERT INTO PLANEJAMENTOSEMANAL (STATUS, DTINICIALPLANO, DTFINALPLANO, IDESCOLA, IDTURMA, DSATIVIDADE, IDUSERINCLUSAO)
 SELECT 
     'Concluído',
-    NOW() - INTERVAL FLOOR(RAND() * 10) DAY,  -- Data inicial aleatória nos últimos 10 dias
+    (
+      ADDDATE('2024-01-01', 
+      (FLOOR(RAND() * 52) * 7) + 
+      (CASE WHEN WEEKDAY('2024-01-01') > 0 THEN 7 - WEEKDAY('2024-01-01') ELSE 0 END))
+    ),  -- Data inicial aleatória nos últimos 10 dias
     NOW() + INTERVAL FLOOR(RAND() * 20) DAY,  -- Data final aleatória nos próximos 20 dias
     1,  -- ID da escola fictícia
     FLOOR(RAND() * 5) + 1,  -- ID da turma fictícia (entre 1 e 5)
@@ -39,3 +43,22 @@ SELECT
 FROM 
     INFORMATION_SCHEMA.TABLES t1, INFORMATION_SCHEMA.TABLES t2
 LIMIT 20;
+
+
+/
+UPDATE PLANEJAMENTOSEMANAL
+SET DTFINALPLANO = DATE_ADD(DTINICIALPLANO, INTERVAL 4 DAY);
+/
+INSERT INTO MATERIAL (NMMATERIAL, DSMATERIAL, IDUSERINCLUSAO) VALUES
+('Lápis', 'Lápis de cor para desenhos', '632d8eee-cc52-49ed-9338-939af6296880'),
+('Borracha', 'Borracha branca para apagar', '632d8eee-cc52-49ed-9338-939af6296880'),
+('Caderno', 'Caderno de 100 folhas pautado', '632d8eee-cc52-49ed-9338-939af6296880'),
+('Tesoura', 'Tesoura sem ponta para crianças', '632d8eee-cc52-49ed-9338-939af6296880'),
+('Cola', 'Cola branca líquida 90g', '632d8eee-cc52-49ed-9338-939af6296880'),
+('Régua', 'Régua plástica de 30 cm', '632d8eee-cc52-49ed-9338-939af6296880'),
+('Mochila', 'Mochila escolar infantil', '632d8eee-cc52-49ed-9338-939af6296880'),
+('Apontador', 'Apontador com depósito', '632d8eee-cc52-49ed-9338-939af6296880'),
+('Canetinha', 'Canetinha hidrográfica 12 cores', '632d8eee-cc52-49ed-9338-939af6296880'),
+('Lápis de cor', 'Lápis de cor 24 cores', '632d8eee-cc52-49ed-9338-939af6296880');
+
+/
