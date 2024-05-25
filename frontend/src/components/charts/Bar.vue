@@ -53,9 +53,11 @@ export default {
         trigger: 'axis',
       },
       legend: {
+        top: 70,
         data: ['Sobra limpa', 'Sobra suja']
       },
       toolbox: {
+        top: 30,
         show: true,
         feature: {
           dataView: { show: true, readOnly: false },
@@ -64,11 +66,13 @@ export default {
           saveAsImage: { show: true }
         }
       },
+      grid: {
+        top: 120
+      },
       calculable: true,
       xAxis: [
         {
           type: 'category',
-          // prettier-ignore
           data: ['Jan', 'Fev', 'Mar', 'Abr', 'Maio', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
         }
       ],
@@ -116,3 +120,8 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.chart {
+  height: 500px;
+}
+</style>

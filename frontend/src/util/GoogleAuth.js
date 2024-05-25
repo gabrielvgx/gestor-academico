@@ -1,4 +1,5 @@
 import Request from '@/util/Request';
+import Env from './Env';
 
 class GoogleAuth {
   async getGoogleBtnElement() {
@@ -33,7 +34,7 @@ class GoogleAuth {
         const googleBtn = await this.getGoogleBtnElement();
         const googleApi = window.google.accounts.id;
         googleApi.initialize({
-          client_id: '26916381806-51edmlopvn51sk3t128peujmk3s88u5a.apps.googleusercontent.com',
+          client_id: Env.get('GOOGLE_CLIENT_ID'),
           callback: function() { console.log('success_callback', ...arguments) },
         });
         googleApi.renderButton(googleBtn, {

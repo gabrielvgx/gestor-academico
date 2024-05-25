@@ -21,7 +21,8 @@
     <v-chip class="d-none" prepend-icon="mdi-console" append-icon="mdi-console" variant="elevated">
       Ambiente de Desenvolvimento
     </v-chip> -->
-    <section class="right-header-slot d-flex align-center justify-end">
+
+    <section class="right-header-slot d-flex align-center justify-end me-3">
       <!-- <v-radio
         :color="isConnected ? 'success' : 'error'"
         :model-value="true"
@@ -32,6 +33,7 @@
           <v-badge :content="notificationCount" :color="notificationCount ? 'error' : 'transparent'" max="99" :dot="!notificationCount">
             <v-btn v-bind="notificationMenu" icon="mdi-bell-outline" density="comfortable" @click="showNotification"></v-btn>
           </v-badge>
+          <v-btn icon="mdi-logout" density="comfortable" @click="logout"></v-btn>
         </template>
       </v-menu>
       <v-menu>
@@ -61,10 +63,15 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { EventModule } from '@/util/EventModule.js';
 import MenuConfig from '@/MenuConfig.js';
+import App from '@/util/App';
+import Login from '@/controllers/Login';
 
 export default {
   emits: ['click'],
   methods: {
+    logout() {
+      EventModule.emit('logout');
+    },
     openMenu() {
       EventModule.emit('open-menu');
     },
@@ -89,6 +96,7 @@ export default {
   },
   setup() {
     const route = useRoute();
+    const useMobileMenu = ref(App.isMobile());
     const isConnected = ref(false);
     const isDevEnv = ref(false);
     const notificationCount = ref(0);
@@ -103,19 +111,27 @@ export default {
     const onChangePage = ({ path }) => {
       pageTitle.value = MenuConfig.getPageName(path);
     };
+    const onResize = () => {
+      useMobileMenu.value = App.isMobile();
+    };
     onMounted(() => {
       EventModule.on('change-page', onChangePage);
+      EventModule.on('confirm-logout', Login.logout);
+      window.addEventListener('resize', onResize);
     });
     onUnmounted(() => {
       EventModule.off('change-page', onChangePage);
+      EventModule.off('confirm-logout', Login.logout);
+      window.removeEventListener('resize', onResize);
     });
     return {
       submenus,
       isConnected,
       isDevEnv,
       notificationCount,
-      useMobileMenu: window.document.body.clientWidth < 500,
+      useMobileMenu,
       pageTitle,
+      dialog: ref(false),
     };
   },
 };

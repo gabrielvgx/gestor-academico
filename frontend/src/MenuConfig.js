@@ -11,36 +11,49 @@ const config = [
     label: 'Planejamento Semanal',
     icon: 'mdi-book-alphabet',
     href: '/week-planning',
+    permissions: ['TEACHER'],
   },
   {
     name: 'add-users',
     label: 'Usuários',
     icon: 'mdi-account',
     href: '/user',
+    permissions: ['SUPERVISOR'],
   },
   {
     name: 'add-school',
-    label: 'Cadastrar escola / turma',
-    icon: 'mdi-home-plus',
-    href: '/school-form',
+    label: 'Escolas e Turmas',
+    icon: 'mdi-home-variant',
+    href: '/school',
+    permissions: ['SUPERVISOR'],
+  },
+  {
+    name: 'material',
+    label: 'Materiais',
+    icon: 'mdi-format-list-bulleted-square',
+    href: '/material',
+    permissions: ['SUPERVISOR']
   },
   {
     name: 'material-request',
     label: 'Solicitar material',
     icon: 'mdi-toy-brick-plus',
     href: '/material-request',
+    permissions: ['TEACHER'],
   },
   {
     name: 'food-record',
     label: 'Registro Alimentar',
     icon: 'mdi-food-fork-drink',
-    href: '/food-record'
+    href: '/food-record',
+    permissions: ['KITCHEN'],
   },
   {
     name: 'settings',
     label: 'Parametrização do Sistema',
     icon: 'mdi-cogs',
-    href: '/settings'
+    href: '/settings',
+    permissions: ['SUPERVISOR'],
   },
 ];
 

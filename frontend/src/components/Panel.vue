@@ -57,4 +57,18 @@ export default {
   height: calc(95vh - var(--header-size) - var(--footer-size) - 1rem);
 }
 
+.header-actions {
+  gap: 1rem;
+  justify-content: flex-start;
+}
+
+@media screen and (max-width: 500px) {
+  .title-slot {
+    display: none !important;
+  }
+  .panel-content {
+    margin-top: 1rem;
+  }
+}
+
 </style>

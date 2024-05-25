@@ -49,7 +49,7 @@ export default {
     const option = ref({
       title: {
         text: titleText,
-        left: 'center',
+        left: 'left',
       },
       tooltip: tooltip || {
         trigger: 'item',
@@ -57,7 +57,7 @@ export default {
       },
       legend: {
         orient: 'vertical',
-        left: 'left',
+        left: 10,
         top: 30,
         data: legendData || [],
       },
@@ -65,8 +65,8 @@ export default {
         {
           name: 'Planejamentos',
           type: 'pie',
-          radius: '55%',
-          center: ['50%', '60%'],
+          radius: '60%',
+          center: ['50%', '65%'],
           color,
           data: data || [
             { value: 335, name: 'Direct' },
@@ -89,3 +89,9 @@ export default {
   }
 }
 </script>
+
+<style langs="scss" scoped>
+.chart {
+  height: 400px;
+}
+</style>

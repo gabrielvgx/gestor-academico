@@ -1,6 +1,7 @@
 <template>
-  <v-container class='generic-container'>
+  <v-container class='generic-container flex-column'>
     <div class="graph-list w-100 h-100">
+      <CardList :data="cards" />
       <Pie v-if="loadedPlanning" :options="planningOptions" @onSelect="onSelectPlanning"></Pie>
       <Bar :options="{}"></Bar>
     </div>
@@ -9,10 +10,11 @@
 </template>
 <script lang="js">
 import Rule from '@/util/Rule';
-import Pie from '@/components/charts/Pie.vue';
-import Bar from '@/components/charts/Bar.vue';
-import Modal from '@/components/Modal.vue';
-import DashboardController from '@/controllers/Dashboard.js';
+import Pie from '@/components/charts/Pie';
+import Bar from '@/components/charts/Bar';
+import Modal from '@/components/Modal';
+import CardList from '@/components/CardList';
+import DashboardController from '@/controllers/Dashboard';
 import { ref } from 'vue';
 
 export default {
@@ -21,6 +23,7 @@ export default {
     Pie,
     Bar,
     Modal,
+    CardList,
   },
   methods: {
     onSelectPlanning(params) {
@@ -39,6 +42,23 @@ export default {
       planningOptions,
       rules: [
         Rule.required(),
+      ],
+      cards: [
+        {
+          name: 'pending-planning',
+          title: 'Req. de Materiais Pendentes',
+          content: '1',
+          icon: 'mdi-clipboard-clock-outline',
+          color: 'green',
+        },
+        {
+          name: 'pending-planning',
+          title: 'Planejamentos Pendentes',
+          content: '12',
+          icon: 'mdi-book-clock',
+          color: 'warning',
+          footer: '',
+        }
       ],
     }
   }

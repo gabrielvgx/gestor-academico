@@ -18,7 +18,13 @@ class Auth {
 
     $app->add(new JwtAuthentication([
         "path" => "/",
-        "ignore" => ["(.+)\/auth", "(.+)\/forgot-password"],
+        "ignore" => [
+          "(.+)\/auth",
+          "(.+)\/forgot-password",
+          "(.+)\/smtp",
+          "(.+)\/verify-otp",
+          "(.+)\/redefine-password",
+        ],
         "secret" => $_ENV["JWT_SECRET_KEY"],
         "secure" => $_ENV["DEV_MODE"] === "YES" ? false : true,
         "error" => function ($response, $arguments) {

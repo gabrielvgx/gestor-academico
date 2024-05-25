@@ -11,4 +11,12 @@ class School {
     return (new DB())->fetch(Query::get('READ_SCHOOL'), $params);
   }
 
+  static function readSchoolAndClass($params) {
+    return (new DB())->fetch(Query::get('READ_SCHOOL_AND_CLASS'), [$params['userId']]);
+  }
+
+  static function getSchoolCount($params) {
+    return (new DB())->fetch(Query::get('GET_SCHOOL_COUNT'), [$params['userId']]);
+  }
+
 }

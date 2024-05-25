@@ -15,6 +15,15 @@ class User {
     ]);
   }
 
+  static function getUserByEmail($email) {
+    return (new DB())->fetch(Query::get('USER_EMAIL'), [ $email ]);
+  }
+
+  static function redefinePassword($userId, $password) {
+    $encryptedPassword = hash('sha256', $password);
+    return (new DB())->execute(Query::get('USER_REDEFINE_PASSWORD'), [$encryptedPassword, $userId]);
+  }
+
   static function create($userData) {
     $id = UniqueId::generate();
     $result = (new DB())->execute(Query::get('CREATE_USER'), [
@@ -30,7 +39,6 @@ class User {
   }
 
   static function delete($userId) {
-    var_dump($userId);
     return (new DB())->execute(Query::get('DELETE_USER'), [$userId]);
   }
 

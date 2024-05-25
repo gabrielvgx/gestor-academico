@@ -1,19 +1,21 @@
 <template>
-  <v-container class="pa-0">
-    <Grid :config="userGridConfig" ref="grid">
-      <template v-slot:header>
-        <v-container class="pa-0 d-flex header-actions">
-          <v-btn prepend-icon="mdi-plus" color="primary" @click="addUser">Adicionar</v-btn>
-          <v-btn prepend-icon="mdi-delete" color="error" variant="outlined" @click="removeUser">Remover</v-btn>
-        </v-container>
-      </template>
-    </Grid>
-    <Modal v-if="openedModal" :modal="{ title: 'Cadastro de Usuário'}" @close="closeModal" @confirm="confirmUser">
-      <template #content>
-        <UserForm v-model="userFormData" />
-      </template>
-    </Modal>
-  </v-container>
+  <Panel :panel="{title: 'Usuários'}">
+    <template #content>
+      <Grid :config="userGridConfig" ref="grid">
+        <template v-slot:header>
+          <v-container class="pa-0 ma-0 d-flex header-actions">
+            <v-btn prepend-icon="mdi-plus" color="primary" @click="addUser">Adicionar</v-btn>
+            <v-btn prepend-icon="mdi-delete" color="error" variant="outlined" @click="removeUser">Remover</v-btn>
+          </v-container>
+        </template>
+      </Grid>
+      <Modal v-if="openedModal" :modal="{ title: 'Cadastro de Usuário'}" @close="closeModal" @confirm="confirmUser">
+        <template #content>
+          <UserForm v-model="userFormData" />
+        </template>
+      </Modal>
+    </template>
+  </Panel>
 </template>
 <script lang="js">
 
@@ -22,6 +24,7 @@ import Request from '@/util/Request';
 import UserForm from '@/pages/user-form';
 import Modal from '@/components/Modal';
 import User from '@/controllers/User';
+import Panel from '@/components/Panel';
 import { ref } from 'vue';
 import Alert from '@/util/Alert';
 
@@ -31,6 +34,7 @@ export default {
     Grid,
     UserForm,
     Modal,
+    Panel,
   },
   methods: {
     addUser() {
@@ -62,7 +66,7 @@ export default {
       userFormData,
       grid,
       userGridConfig: {
-        title: 'Usuários',
+        // title: 'Usuários',
         itemValue: 'ID',
         headers: [
           {
@@ -89,8 +93,4 @@ export default {
 }
 </script>
 <style lang="scss">
-.header-actions {
-  gap: 1rem;
-  justify-content: flex-end;
-}
 </style>

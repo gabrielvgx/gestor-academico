@@ -1,8 +1,8 @@
 <template>
   <!-- <v-row justify='center'> -->
     <v-dialog :model-value='true' class='modal' @update:modelValue='changeValue'>
-      <v-card class='px-5'>
-        <v-row>
+      <v-card class='px-5 ma-0'>
+        <v-row style="max-height: 10%; margin: 10px">
           <v-col class='mb-3 px-0'>
             <v-label class='modal-title'>
               {{ modal?.title || '' }}
@@ -101,10 +101,11 @@ export default {
   width: var(--default-modal-width) !important;
   .v-overlay__content > .v-card {
     margin-bottom: var(--modal-footer-height);
+    height: 80vh !important;
   }
 }
 .modal-title {
-  font-size: 1.5rem !important;
+  font-size: 1rem !important;
   color: var(--v-primary-base);
 }
 </style>

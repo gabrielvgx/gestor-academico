@@ -1,22 +1,38 @@
 <template>
-  <v-card :title="config.title" flat>
+  <v-card :title="config.title" class="ma-0 card-grid">
     <template v-slot:text>
       <slot name="header"></slot>
     </template>
     <v-data-table-server
+      class="table-grid"
       v-model="selected"
       v-model:items-per-page="itemsPerPage"
       :headers="headers"
       :items="tableData"
       :items-length="totalSize"
+      :group-by="groupBy"
       hover
       show-select
+      height="300"
+      fixed-header
       :loading="loading"
       return-object
       :item-value="itemValue"
       @update:options="loadData"
     >
-
+    <template v-slot:group-header="{ item, columns, toggleGroup, isGroupOpen }">
+      <tr>
+        <td :colspan="columns.length">
+          <VBtn
+            :icon="isGroupOpen(item) ? '$expand' : '$next'"
+            size="small"
+            variant="text"
+            @click="() => toggleGroup(item)"
+          ></VBtn>
+          {{ item.items[0].value[groupDescription] }}
+        </td>
+      </tr>
+    </template>
     </v-data-table-server>
   </v-card>
 </template>
@@ -30,7 +46,6 @@ export default {
   name: 'grid',
   props: ['config'],
   data: function() {
-    console.log(this.reload());
     return ({
       tableData: [],
     });
@@ -38,6 +53,7 @@ export default {
   methods: {
     async reload() {
       try {
+        this.loading = true;
         const result = await this.loadData();
         this.tableData = result;
       } catch (err) {
@@ -61,11 +77,12 @@ export default {
     const search = ref('');
     const totalSize = ref(0);
     const selected = ref([]);
-    // const data = ref([]);
-    const loading = ref(true);
+    const loading = ref(false);
     const itemValue = ref(props.config.itemValue || 'id');
     const itemsPerPage = props.config.itemsPerPage || 6;
     const headers = props.config.headers;
+    const groupBy = props.config.groupBy || [];
+    const groupDescription = props.config.groupDescription || '';
     return {
       search,
       getSelectedRows() {
@@ -77,6 +94,8 @@ export default {
       headers,
       itemsPerPage,
       itemValue,
+      groupBy,
+      groupDescription,
     }
   }
 }
@@ -85,4 +104,11 @@ export default {
 
 
 
-<style lang="scss"></style>
+<style lang="scss">
+// .card-grid
+.table-grid
+ {
+  max-height: 80%;
+  overflow-y: auto;
+}
+</style>

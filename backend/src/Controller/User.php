@@ -59,13 +59,8 @@ class User {
       try {
         $params = $request->getParsedBody();
         foreach($params['users'] as $userId) {
-          // var_dump($userId);
           UserProvider::delete($userId);
         }
-
-        // if (!$result) {
-        //   throw new \Exception('FAIL_DELETE_USER');
-        // }
 
         return ResponseHandler::success($response, [
           'message' => 'SUCCESS_DELETE_USER',

@@ -24,4 +24,21 @@ class School {
         return ResponseHandler::error($response, $err);
       }
     }
+
+    public function readSchoolAndClass(Request $request, Response $response) {
+      try {
+        $userId = $request->getAttribute('token')['data']->ID;
+        $counterResult = SchoolProvider::getSchoolCount(['userId' => $userId]);
+
+        $result = SchoolProvider::readSchoolAndClass([
+          'userId' => $userId,
+        ]);
+        return ResponseHandler::success($response, [
+          'data' => $result,
+          'total' => $counterResult[0]['COUNT'],
+        ]);
+      } catch(\Exception $err) {
+        return ResponseHandler::error($response, $err);
+      }
+    }
 }

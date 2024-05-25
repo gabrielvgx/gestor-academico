@@ -6,6 +6,7 @@
  */
 
 // Composables
+import App from '@/util/App';
 import { EventModule } from '@/util/EventModule';
 import { createRouter, createWebHistory } from 'vue-router/auto'
 
@@ -15,8 +16,8 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const isAuthenticated = localStorage.getItem('token');
-
-  if (!isAuthenticated && to.path !== '/login') {
+  const publicRoutes = App.getPublicRoutes();
+  if (!isAuthenticated && !publicRoutes.includes(to.path)) {
     next('/login');
   } else {
     next();

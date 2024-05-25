@@ -1,9 +1,9 @@
 <template>
   <v-container class='pa-0 w-100 h-100 d-flex generic-container'>
     <v-form class="school-form d-flex flex-column generic-form" ref="form">
-      <v-row class="form-title">
+      <!-- <v-row class="form-title">
         <h3>Cadastro de Escola / Turma</h3>
-      </v-row>
+      </v-row> -->
       <div class="form-body">
         <div>
           <div class="text-subtitle-1 required">Nome da Escola</div>
@@ -32,7 +32,6 @@
           </div>
         </div>
       </div>
-      <v-btn color="primary" @click="() => console.log(formData.classCollection)">Confirmar</v-btn>
     </v-form>
   </v-container>
 </template>

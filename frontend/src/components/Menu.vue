@@ -13,7 +13,7 @@
             class="menu-link"
             :to="{ path: getMenuLink(menu) }"
             v-bind="props"
-            v-on="on"
+            v-on="on || {}"
           >
             <v-icon>{{ menu.icon }}</v-icon>
           </router-link>
@@ -54,10 +54,10 @@
 <script lang="js">
 import { ref } from 'vue';
 import Menu from '@/controllers/Menu.js';
+import AccessControl from '@/util/AccessControl';
 
 export default {
   name: 'MenuApp',
-  props: ['items'],
   methods: {
     hasSubMenu(menu, subMenuToFind) {
       if(!Array.isArray(menu.submenu)) return false;
@@ -84,8 +84,8 @@ export default {
       return { path: submenu.href }
     },
   },
-  setup(props) {
-    const menu = [...Menu.getMenuWithAccessControl(props.items)];
+  setup() {
+    const menu = AccessControl.getMenu();
     Menu.setDefaultIsActive(menu);
     const menuItems = ref(menu);
     return {

@@ -9,14 +9,6 @@ use App\Util\Mail;
 
 class Dashboard {
 
-    public function sendMail() {
-      try {
-        Mail::send();
-      } catch(\Exception $err) {
-        var_dump($err->getMessage());
-      }
-    }
-
     public function getPlanning(Request $request, Response $response) {
       try {
         // $params = $request->getParsedBody();
