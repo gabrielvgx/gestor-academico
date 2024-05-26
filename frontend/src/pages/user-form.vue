@@ -74,7 +74,7 @@
           density="comfortable"
           variant="underlined"
           :loading="loadingClass"
-          :disabled="loadingClass"
+          :disabled="loadingClass || !formData.school"
         />
       </v-col>
     </v-row>
@@ -102,7 +102,7 @@ export default {
   setup(props, { emit }) {
     const visible = ref(false);
     const loadingSchool = ref(true);
-    const loadingClass = ref(true);
+    const loadingClass = ref(false);
     const schools = ref([]);
     const allClass = ref([]);
     const { modelValue } = toRefs(props);
@@ -121,13 +121,13 @@ export default {
     //   }
     // );
     const changeSchool = () => {
+      loadingClass.value = true;
       ClassController.list(formData.value.school).then(result => {
         allClass.value = result;
         if (result.length === 1) {
           formData.value.classId = result[0].ID;
         }
-        loadingClass.value = false;
-      });
+      }).finally(() => loadingClass.value = false);
     }
     School.list().then(data => {
       schools.value = data;
@@ -135,8 +135,7 @@ export default {
         formData.value.school = data[0].ID;
         changeSchool();
       }
-      loadingSchool.value = false;
-    });
+    }).finally(() => loadingSchool.value = false);
     const officeTypes = [
       {
         name: 'TEACHER',

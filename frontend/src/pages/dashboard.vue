@@ -1,9 +1,13 @@
 <template>
   <v-container class='generic-container flex-column'>
     <div class="graph-list w-100 h-100">
-      <CardList :data="cards" />
-      <Pie v-if="loadedPlanning" :options="planningOptions" @onSelect="onSelectPlanning"></Pie>
-      <Bar :options="{}"></Bar>
+      <CardList :data="cards" @onClick="(card) => $router.push({ path: `/${card.name}`})" />
+      <Pie
+        v-if="loadedPlanning"
+        :options="planningOptions"
+        @onSelect="onSelectPlanning"
+      />
+      <Bar :options="{chartName: 'food-graph'}" ></Bar>
     </div>
     <Modal v-if="false" :modal="{}"></Modal>
   </v-container>
@@ -45,14 +49,14 @@ export default {
       ],
       cards: [
         {
-          name: 'pending-planning',
+          name: 'material-request',
           title: 'Req. de Materiais Pendentes',
           content: '1',
           icon: 'mdi-clipboard-clock-outline',
           color: 'green',
         },
         {
-          name: 'pending-planning',
+          name: 'planning-management',
           title: 'Planejamentos Pendentes',
           content: '12',
           icon: 'mdi-book-clock',

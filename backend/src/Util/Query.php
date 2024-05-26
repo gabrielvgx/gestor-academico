@@ -73,7 +73,7 @@ SQL,
         FROM USUARIOINSTITUICAO UI
         INNER JOIN ESCOLA E
           ON UI.IDESCOLA = E.ID
-        INNER JOIN TURMA T
+        LEFT JOIN TURMA T
           ON UI.IDESCOLA = T.IDESCOLA
           AND (UI.IDTURMA IS NULL) OR UI.IDTURMA = T.ID
         WHERE UI.IDUSUARIO = ?
@@ -82,6 +82,22 @@ SQL,
       'READ_CLASS' => "SELECT ID, NMTURMA FROM TURMA WHERE IDESCOLA = ?",
       'CREATE_USER_ORG' => "INSERT INTO USUARIOINSTITUICAO (IDUSUARIO, IDESCOLA, IDTURMA) VALUES (?, ?, ?)",
       'DELETE_USER' => "DELETE FROM USUARIO WHERE ID = ?",
+      'COUNT_PENDING_PLANNING' => <<<SQL
+        SELECT
+          SUM(NRPLANEJAMENTO) AS NUM_PLANEJAMENTO
+        FROM (
+          SELECT
+            COUNT(*) AS NRPLANEJAMENTO
+          FROM
+          PLANEJAMENTO P
+          INNER JOIN USUARIOINSTITUICAO UI
+            ON P.IDESCOLA = UI.IDESCOLA
+            AND (UI.IDTURMA IS NULL OR P.IDTURMA = UI.IDTURMA)
+            AND UI.IDUSUARIO = ?
+          WHERE P.STATUS IN ('PENDENTE', 'REJEITADO')
+          GROUP BY WEEK(P.DTPLANO)
+        ) A
+SQL,
       'GET_SCHOOL_COUNT' => <<<SQL
         SELECT
           COUNT(*) AS COUNT
@@ -93,6 +109,51 @@ SQL,
           WHERE IDUSUARIO = ?
         ) A
         GROUP BY IDESCOLA
+SQL,
+      'PENDING_PLANNING' => <<<SQL
+        SELECT
+          PL.DTPLANO,
+          PL.STATUS,
+          E.ID AS IDESCOLA,
+          E.NMESCOLA,
+          T.ID AS IDTURMA,
+          T.NMTURMA
+        FROM
+          USUARIOINSTITUICAO UI
+          INNER JOIN PLANEJAMENTO PL
+            ON UI.IDESCOLA = PL.IDESCOLA
+            AND (UI.IDTURMA IS NULL OR UI.IDTURMA = PL.IDTURMA)
+          INNER JOIN ESCOLA E
+            ON PL.IDESCOLA = E.ID
+          INNER JOIN TURMA T
+            ON PL.IDTURMA = T.ID
+        WHERE
+          PL.STATUS IN ('PENDENTE', 'REJEITADO')
+        ORDER BY
+          PL.DTPLANO
+SQL,
+      'DETAIL_PLANNING' => <<<SQL
+        SELECT
+          PL.DTPLANO,
+          PL.STATUS,
+          PL.DSATIVIDADE,
+          PL.DSRETORNO,
+          PL.NRREVISOES,
+          E.ID AS IDESCOLA,
+          E.NMESCOLA,
+          T.ID AS IDTURMA,
+          T.NMTURMA,
+          BNCC.CODBNCC,
+          BNCC.NMCAMPOEXP
+        FROM
+          PLANEJAMENTO PL
+          INNER JOIN ESCOLA E
+            ON PL.IDESCOLA = E.ID
+          INNER JOIN TURMA T
+            ON PL.IDTURMA = T.ID
+          INNER JOIN BNCC
+            ON INSTR(PL.IDBNCC, CONCAT('|', PL.IDBNCC, '|')) <> 0
+        WHERE PL.ID = ?
 SQL,
     ],
   ];

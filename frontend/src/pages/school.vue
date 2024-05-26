@@ -9,9 +9,14 @@
           </v-container>
         </template>
       </Grid>
-      <Modal v-if="openedModal" :modal="{ title: 'Cadastro de Escola / Turmas'}" @close="closeModal" @confirm="confirmModal">
+      <Modal
+        v-if="openedModal"
+        :modal="{ title: 'Cadastro de Escola / Turmas'}"
+        @close="closeModal"
+        @confirm="confirmModal"
+      >
         <template #content>
-          <SchoolForm v-model="formData" />
+          <SchoolForm ref="formRef" v-model="formData" />
         </template>
       </Modal>
     </template>
@@ -37,8 +42,16 @@ export default {
       this.openedModal = true;
     },
     removeGridItem() {},
-    closeModal() {},
-    confirmModal() {},
+    closeModal() {
+      this.openedModal = false;
+    },
+    async confirmModal() {
+      const isValid = await this.$refs.formRef.validate();
+      if (isValid) {
+        const formData = this.$refs.formRef.getFormData();
+        console.log(formData);
+      }
+    },
   },
   setup() {
     const formData = ref({});
@@ -50,6 +63,9 @@ export default {
         // { key: 'NMESCOLA', order: 'asc' },
       ],
       groupDescription: 'NMESCOLA',
+      hasChildren(row){
+        return row.items.some(item => item.value.IDTURMA);
+      },
       headers: [
         {
           title: 'Turma',

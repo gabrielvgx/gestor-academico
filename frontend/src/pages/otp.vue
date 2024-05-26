@@ -3,7 +3,7 @@
     <template #content>
       <h3 class="text-center">Validação de Acesso</h3>
       <div class="d-flex w-100 my-3 align-center justify-center">
-        <span class="description text-center">Informe o código enviado para o e-mail gab****@gmail.com</span>
+        <span class="description text-center">Informe o código enviado para o e-mail {{ userEmail }}</span>
       </div>
       <v-otp-input v-model="otp" @finish="submitCode"></v-otp-input>
       <div class="d-flex w-100 mb-6 align-center justify-center">
@@ -58,6 +58,7 @@ export default {
     return {
       otp,
       loading,
+      userEmail: StorageHandler.getForgotPassUser(),
     }
   }
 }

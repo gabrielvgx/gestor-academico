@@ -64,7 +64,7 @@ class Login {
         $subject = "Seu código é {$code} para redefinir sua senha do Gestor Acadêmico";
         $body = MailTemplate::getOneTimePassword($code, );
         $images = [MailTemplate::getLogoImg()];
-        Mail::send($subject, $body, $images);
+        Mail::send($params['email'], $subject, $body, $images);
         return ResponseHandler::success($response, [
           'message' => 'SUCCESS_SEND_EMAIL',
         ]);
@@ -125,7 +125,7 @@ class Login {
         $subject = "Seu código é {$code} para acessar o Gestor Acadêmico";
         $body = MailTemplate::getOneTimePassword($code);
         $images = [MailTemplate::getLogoImg()];
-        Mail::send($subject, $body, $images);
+        Mail::send('', $subject, $body, $images);
         return ResponseHandler::success($response, [
           'message' => 'SUCCESS_SEND_OTP_MAIL',
         ]);

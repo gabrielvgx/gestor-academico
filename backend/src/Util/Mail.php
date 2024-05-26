@@ -6,7 +6,7 @@ use PHPMailer\PHPMailer\OAuth;
 use League\OAuth2\Client\Provider\Google;
 
 class Mail {
-  static function send($subject, $body, $images = []) {
+  static function send($address, $subject, $body, $images = []) {
     $mail = new PHPMailer();
     $mail->isSMTP();
     $mail->Host = 'smtp.gmail.com';
@@ -16,7 +16,7 @@ class Mail {
     $mail->AuthType = 'XOAUTH2';
 
     $mail->setFrom($_ENV['SMTP_USER_EMAIL'], $_ENV['SMTP_USER_NAME']);
-    $mail->addAddress($_ENV['SMTP_USER_EMAIL'], $_ENV['SMTP_USER_NAME']);
+    $mail->addAddress($address);
 
     $mail->Subject = $subject;
     $mail->CharSet = PHPMailer::CHARSET_UTF8;

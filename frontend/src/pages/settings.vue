@@ -2,16 +2,30 @@
   <Panel :panel="panelConfig">
     <template #content>
       <v-row>
-        <v-col>
-          <div class="text-subtitle-1 required">Antecedência de Aviso de Planejamento (dias)</div>
+        <v-col cols='12' md='3' lg='3'>
+          <div class="text-subtitle-1 required">Aviso de Planejamento</div>
           <v-text-field
             v-model="formData.daysBeforePlanningAlert"
             hide-spin-buttons
             type="number"
             density="compact"
             placeholder="Nº de dias"
-            dirty
+            suffix="dia(s)"
             variant="outlined"
+            hint="Nº de dias anterior ao planejamento para avisar o professor da pendência de envio"
+          />
+        </v-col>
+        <v-col cols='12' md='4' lg='4'>
+          <div class="text-subtitle-1 required">Prazo mínimo de envio de planejamento</div>
+          <v-text-field
+            v-model="formData.daysLimitSendPlanning"
+            hide-spin-buttons
+            type="number"
+            density="compact"
+            placeholder="Nº de dias"
+            suffix="dia(s) antes"
+            variant="outlined"
+            hint="Nº de dias anteriores ao planejamento que o sistema deve permitir o envio"
           />
         </v-col>
       </v-row>
@@ -30,6 +44,7 @@ export default {
     const panelConfig = { title: 'Parametrização do Sistema' };
     const formData = ref({
       daysBeforePlanningAlert: 30,
+      daysLimitSendPlanning: 1,
     });
     return {
       panelConfig,

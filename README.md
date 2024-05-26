@@ -28,6 +28,20 @@
   composer install
   ```
 
+#### Notificações do sistema
+
+STATUS (PLANEJAMENTO) / NRREVIEW
+
+- APROVADO
+- REJEITADO
+- PENDENTE
+
+SUPERVISOR -> Planejamentos não analisados
+SUPERVISOR -> Requisição de material não analisada
+TEACHER -> Planejamentos não enviados (analisando parametrizacao de dias anteriores ao plano)
+TEACHER -> Planejamentos com modificação no status
+TEACHER -> Materiais aprovados / rejeitados
+
 ### EndPoints
 
 - Todas as rotas de backend possuem validação em middleware de JWT, exceto a

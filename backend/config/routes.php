@@ -16,4 +16,5 @@ return function (App $app) {
     $app->get('/material', [\App\Controller\Material::class, 'read']);
     $app->get('/dashboard', [\App\Controller\Dashboard::class, 'getPlanning']);
     $app->get('/smtp', [\App\Controller\Login::class, 'sendOneTimePasswordMail']);
+    $app->get('/notification', [\App\Controller\Notification::class, 'read']);
 };

@@ -65,6 +65,7 @@ import { EventModule } from '@/util/EventModule.js';
 import MenuConfig from '@/MenuConfig.js';
 import App from '@/util/App';
 import Login from '@/controllers/Login';
+import '@/controllers/Notification';
 
 export default {
   emits: ['click'],

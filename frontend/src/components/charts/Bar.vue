@@ -1,5 +1,7 @@
 <template>
-  <v-chart class='chart' :option='option' />
+  <v-container class="pa-0 my-0">
+    <v-chart :id="chartName" class='chart' :option='option' />
+  </v-container>
 </template>
 
 <script lang="js">
@@ -17,6 +19,8 @@ import {
 } from 'echarts/components';
 import VChart from 'vue-echarts';
 import { ref } from 'vue';
+import * as echarts from 'echarts/core';
+import { onUnmounted } from 'vue';
 
 use([
   LineChart,
@@ -40,11 +44,24 @@ export default {
     const {
       titleText,
       tooltip,
+      chartName,
       // legendData,
       // data,
       // legendDataX,
       // color = ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'],
     } = props.options;
+    const handleResize = () => {
+      const el = document.getElementById(chartName);
+      const graphEl = el && el.children ? el.children[0] : null
+      const chartInstance = graphEl ? echarts.getInstanceByDom(graphEl) : null;
+      if (chartInstance) {
+        chartInstance.resize();
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    onUnmounted(() => {
+      window.removeEventListener('resize', handleResize);
+    });
     const option = ref({
       title: {
         text: titleText || 'Análise de Desperdício Alimentar (KG)',
@@ -116,7 +133,7 @@ export default {
         }
       ],
     });
-    return { option };
+    return { option, chartName };
   }
 }
 </script>

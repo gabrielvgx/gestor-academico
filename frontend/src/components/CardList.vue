@@ -1,7 +1,7 @@
 <template>
   <v-container class="pa-0 my-3 d-flex flex-wrap justify-center" style="gap: 1rem">
     <v-card class='card ma-0' v-for='card in cards' :key='card.name' :color='card.color'>
-      <v-row class="ma-0 pa-0 h-100">
+      <v-row class="ma-0 pa-0 h-100" @click="() => $emit('onClick', card)">
         <v-col cols='2' md='2' sm='12' class='d-flex align-center justify-center card-icon'>
           <v-icon :icon='card.icon'></v-icon>
         </v-col>
@@ -19,6 +19,7 @@
 <script lang="js">
 export default {
   props: ['data'],
+  emits: ['onClick'],
   setup(props) {
     return {
       cards: props.data,
@@ -34,6 +35,7 @@ export default {
   max-width: min(100%, 300px);
   min-width: 250px;
   max-height: 100px;
+  cursor: pointer;
   .title-card {
     font-size: 1rem;
   }

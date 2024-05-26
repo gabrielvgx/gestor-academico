@@ -14,6 +14,20 @@ const config = [
     permissions: ['TEACHER'],
   },
   {
+    name: 'planning-management',
+    label: 'Planejamentos',
+    icon: 'mdi-book-settings-outline',
+    href: '/planning-management',
+    permissions: ['SUPERVISOR'],
+  },
+  {
+    name: 'material',
+    label: 'Materiais',
+    icon: 'mdi-format-list-bulleted-square',
+    href: '/material',
+    permissions: ['SUPERVISOR']
+  },
+  {
     name: 'add-users',
     label: 'Usuários',
     icon: 'mdi-account',
@@ -23,16 +37,9 @@ const config = [
   {
     name: 'add-school',
     label: 'Escolas e Turmas',
-    icon: 'mdi-home-variant',
+    icon: 'mdi-town-hall',
     href: '/school',
     permissions: ['SUPERVISOR'],
-  },
-  {
-    name: 'material',
-    label: 'Materiais',
-    icon: 'mdi-format-list-bulleted-square',
-    href: '/material',
-    permissions: ['SUPERVISOR']
   },
   {
     name: 'material-request',

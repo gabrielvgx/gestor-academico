@@ -27,15 +27,14 @@ VALUES
     ('Turma 5', NOW(), '632d8eee-cc52-49ed-9338-939af6296880', 1);
 
 
-INSERT INTO PLANEJAMENTOSEMANAL (STATUS, DTINICIALPLANO, DTFINALPLANO, IDESCOLA, IDTURMA, DSATIVIDADE, IDUSERINCLUSAO)
+INSERT INTO PLANEJAMENTO (STATUS, DTPLANO, IDESCOLA, IDTURMA, DSATIVIDADE, IDUSERINCLUSAO)
 SELECT 
-    'Concluído',
+    'APROVADO',
     (
       ADDDATE('2024-01-01', 
       (FLOOR(RAND() * 52) * 7) + 
       (CASE WHEN WEEKDAY('2024-01-01') > 0 THEN 7 - WEEKDAY('2024-01-01') ELSE 0 END))
     ),  -- Data inicial aleatória nos últimos 10 dias
-    NOW() + INTERVAL FLOOR(RAND() * 20) DAY,  -- Data final aleatória nos próximos 20 dias
     1,  -- ID da escola fictícia
     FLOOR(RAND() * 5) + 1,  -- ID da turma fictícia (entre 1 e 5)
     CONCAT('Atividade ', FLOOR(RAND() * 100)),  -- Descrição da atividade fictícia
@@ -45,9 +44,6 @@ FROM
 LIMIT 20;
 
 
-/
-UPDATE PLANEJAMENTOSEMANAL
-SET DTFINALPLANO = DATE_ADD(DTINICIALPLANO, INTERVAL 4 DAY);
 /
 INSERT INTO MATERIAL (NMMATERIAL, DSMATERIAL, IDUSERINCLUSAO) VALUES
 ('Lápis', 'Lápis de cor para desenhos', '632d8eee-cc52-49ed-9338-939af6296880'),

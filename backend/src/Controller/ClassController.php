@@ -13,7 +13,7 @@ class ClassController {
         $schoolId = $request->getQueryParams()['IDESCOLA'];
         $result = ClassProvider::read([$schoolId]);
 
-        if (!$result) {
+        if ($result === false) {
           throw new \Exception('FAIL_GET_CLASS');
         }
 

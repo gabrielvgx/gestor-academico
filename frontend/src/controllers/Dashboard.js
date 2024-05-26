@@ -37,6 +37,7 @@ class Dashboard {
       legendData: labels,
       color: colors,
       data,
+      chartName: 'planning-graph',
     }
   }
 }
