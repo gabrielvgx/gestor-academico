@@ -10,7 +10,6 @@ class ResponseHandler {
       'message' => $error->getMessage(),
     ]));
     return $response->withStatus(500)->withHeader('Content-Type', 'application/json');
-    // var_dump(500);
   }
   static function success(Response $response, $data = []) {
     $response->getBody()->write(json_encode($data));

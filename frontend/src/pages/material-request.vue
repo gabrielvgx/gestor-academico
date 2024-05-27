@@ -1,105 +1,110 @@
 <template>
-  <v-container class='user-container generic-container'>
-    <v-form class="user-form generic-form" ref="form">
-      <v-row class="form-title">
-        <h3>Solicitação de Material</h3>
-      </v-row>
-      <div class="form-body">
-        <div>
-          <div class="text-subtitle-1">Solicitante</div>
-          <v-text-field
-              v-model="formData.username"
-              type="text"
-              density="compact"
-              placeholder="Nome"
-              variant="outlined"
-              autocomplete="name"
-              disabled
-          ></v-text-field>
-        </div>
-        <div>
-          <div class="text-subtitle-1 required">Previsão de Utilização</div>
-          <v-locale-provider locale="BR">
-            <v-date-picker
-              :rules="rules"
-              hide-header
-              v-model="formData.utilizationDate"
-              :allowed-dates="allowedDates"
-              :min="getFormattedNow()"
-              :max="getMaxDate()"
-            ></v-date-picker>
-          </v-locale-provider>
-        </div>
-        <div>
-          <v-autocomplete
-            class="required"
-            :rules="rules"
-            label="Material"
-            :items="['Caneta', 'Giz de Cera', 'Cartolina', 'Massinha de Modelar']"
-            density="comfortable"
-            variant="underlined"
-            multiple
-            chips
-          ></v-autocomplete>
-        </div>
-        <div>
-          <div class="text-subtitle-1 required">Justificativa</div>
-          <v-textarea
-            v-model="formData.reason"
-            placeholder="Descreva o motivo da solicitação"
-            no-resize
-            counter
-            :rules="[Rule.required(), Rule.maxCharacters({ max: 200 })]"
-          ></v-textarea>
-        </div>
-      </div>
-      <v-btn color="primary">Confirmar</v-btn>
-    </v-form>
-  </v-container>
+  <Panel :panel="{title: 'Materiais'}">
+    <template #content>
+      <Grid :config="gridConfig" ref="grid">
+        <!-- <template v-slot:header>
+          <v-container class="pa-0 ma-0 d-flex header-actions">
+            <v-btn prepend-icon="mdi-plus" color="primary" @click="gridAdd">Adicionar</v-btn>
+            <v-btn prepend-icon="mdi-delete" color="error" variant="outlined" @click="gridRemove">Remover</v-btn>
+          </v-container>
+        </template> -->
+      </Grid>
+      <Modal v-if="openedModal" :modal="{ title: 'Cadastro de Material'}" @close="closeModal" @confirm="modalConfirm">
+        <template #content>
+          <MaterialForm ref="addMaterialRef" v-model="formData" />
+        </template>
+      </Modal>
+    </template>
+  </Panel>
 </template>
 <script lang="js">
+
+import Grid from '@/components/Grid';
+import Request from '@/util/Request';
+import MaterialForm from '@/pages/material-form';
+import Modal from '@/components/Modal';
+import Material from '@/controllers/Material';
+import Panel from '@/components/Panel';
 import { ref } from 'vue';
-import Rule from '@/util/Rule';
-import Login from '@/controllers/Login';
-import { format, add } from 'date-fns';
+import Alert from '@/util/Alert';
+import { EventModule } from '@/util/EventModule';
+import { onUnmounted } from 'vue';
 
 export default {
-  name: 'material-request',
-  components: {},
+  components: {
+    Grid,
+    MaterialForm,
+    Modal,
+    Panel,
+  },
   methods: {
-    getMaxDate() {
-      const maxDate = add(new Date(), { months: 3 });
-      return format(maxDate, 'yyyy-MM-dd');
+    gridAdd() {
+      this.openedModal = true;
     },
-    getFormattedNow() {
-      return format(new Date(), 'yyyy-MM-dd');
-    },
-    allowedDates(value) {
-      const dayOfWeek = format(value, 'i').toString();
-      return !['6', '7'].includes(dayOfWeek);
-    },
-    async login() {
-      const isValid = await this.$refs.form.validate();
-      if (isValid) {
-        Login.auth(this.formData);
+    gridRemove() {
+      if (this.grid) {
+        const rows = this.grid.getSelectedRows();
+        if (rows.length) {
+          EventModule.emit('confirmMessage', { event: 'remove-material', message: `Confirma a exclusão de ${rows.length} materiais?`})
+        } else {
+          Alert.showWarn('Selecione ao menos um item');
+        }
       }
+    },
+    async modalConfirm() {
+      const isValid = await this.$refs.addMaterialRef.isValid();
+      if (isValid) {
+        const data = this.$refs.addMaterialRef.getValue();
+        const success =  await Material.create(data);
+        if (success) {
+          this.openedModal = false;
+          this.grid.reload();
+        }
+      }
+    },
+    closeModal() {
+      this.openedModal = false;
     },
   },
   setup() {
-    const visible = ref(false);
-    const formData = ref({
-      username: localStorage.getItem('USER'),
-      reason: null,
-      utilizationDate: null,
-      material: null,
-    });
+    const openedModal = ref(false);
+    const formData = ref({});
+    const grid = ref(null);
+    const removeMaterial = async () => {
+      const success = await Material.remove(grid.value.getSelectedRows());
+      if (success) {
+        grid.value.reload();
+      }
+    }
+    EventModule.on('remove-material', removeMaterial);
+    onUnmounted(() => {
+      EventModule.off('remove-material', removeMaterial);
+    })
     return {
-      visible,
-      rules: [
-        Rule.required(),
-      ],
-      Rule,
+      openedModal,
       formData,
+      grid,
+      removeMaterial,
+      gridConfig: {
+        // title: 'Usuários',
+        showSelect: false,
+        itemValue: 'ID',
+        headers: [
+          {
+            title: 'Material',
+            key: 'NMMATERIAL',
+          },
+          {
+            title: 'Qtd.',
+            key: 'QTMATERIAL',
+          },
+        ],
+        loadData: async function() {
+          // const { page = 1, itemsPerPage = 10, sortBy = [] } = params;
+          const { data, total } = await Request.get('/material-request');
+          return { data, total: total || data.length };
+        },
+      }
     }
   }
 }

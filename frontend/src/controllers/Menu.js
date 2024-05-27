@@ -39,23 +39,6 @@ class Menu {
     return permissionsDecoded;
   }
 
-  getMenuWithAccessControl(menuItems) {
-    const filtredMenu = [];
-    const userPermissions = []; //this.getUserPermissions();
-
-    return menuItems;
-    // if (!this.hasEnabledAccessControl()) return menuItems;
-
-    menuItems.forEach((menu) => {
-      if (this.isEnabledMenu(menu, userPermissions)) {
-        if (this.hasSubMenu(menu)) {
-          menu.submenu = menu.submenu.filter((submenu) => this.isEnabledMenu(submenu, userPermissions));
-        }
-        filtredMenu.push(menu);
-      }
-    });
-    return filtredMenu;
-  }
 }
 
 export default new Menu();

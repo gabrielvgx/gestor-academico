@@ -10,7 +10,7 @@
 
 - MySql >= 8.0.36
 
-### Executando o projeto
+#### Executando o projeto
 
 - frontend
   - Criar arquivo .env baseado no arquivo .env.example
@@ -27,6 +27,64 @@
   ```sh
   composer install
   ```
+
+#### Notificações do sistema
+
+STATUS (PLANEJAMENTO) / NRREVIEW
+
+- APROVADO
+- REJEITADO
+- PENDENTE
+
+SUPERVISOR -> Planejamentos não analisados
+SUPERVISOR -> Requisição de material não analisada
+TEACHER -> Planejamentos não enviados (analisando parametrizacao de dias anteriores ao plano)
+TEACHER -> Planejamentos com modificação no status
+TEACHER -> Materiais aprovados / rejeitados
+
+### EndPoints
+
+- Todas as rotas de backend possuem validação em middleware de JWT, exceto a
+  rotina de login (/auth) utilizada para gerar o token de autenticação
+
+<details>
+  <summary>
+    <code>POST</code>
+    <code><b>/auth</b></code>
+    <code>(Autenticar usuário na plataforma)</code>
+  </summary>
+
+##### Payload
+
+```json
+{
+  "email": "example@example.com",
+  "password": "password"
+}
+```
+
+</details>
+
+---
+
+<details>
+  <summary>
+    <code>POST</code>
+    <code><b>/user</b></code>
+    <code>(criar usuário)</code>
+  </summary>
+
+##### Payload
+
+```json
+{
+  "userName": "Username",
+  "office": "TEACHER|SUPERVISOR|KITCHEN",
+  "email": "example@example.como"
+}
+```
+
+</details>
 
 ### Gráficos:
 

@@ -1,83 +1,96 @@
 <template>
-  <v-container class='user-container generic-container'>
-    <v-form class="user-form generic-form" ref="form">
-      <v-row class="form-title">
-        <h3>Cadastro de Usuário</h3>
-      </v-row>
-      <div>
+  <v-form ref="form">
+    <v-row>
+      <v-col class="py-0" cols="12" lg="6" md="6" sm="12">
         <div class="text-subtitle-1 required">Nome</div>
         <v-text-field
-            v-model="formData.name"
-            :rules="rules"
-            type="text"
-            density="compact"
-            placeholder="Nome"
-            variant="outlined"
-            autocomplete="name"
-        ></v-text-field>
-      </div>
-      <div>
+          v-model="formData.name"
+          @input="updateFormData"
+          :rules="rules"
+          type="text"
+          density="compact"
+          placeholder="Nome"
+          variant="outlined"
+          autocomplete="name"
+        />
+      </v-col>
+      <v-col class="py-0">
         <div class="text-subtitle-1 required">E-mail</div>
         <v-text-field
           v-model="formData.email"
+          @input="updateFormData"
           :rules="rules"
           type="text"
           density="compact"
           placeholder="E-mail"
           variant="outlined"
           autocomplete="email"
-        ></v-text-field>
-      </div>
-      <div>
+        />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="py-0">
         <v-select
+          v-model="formData.office"
+          @update:modelValue="updateFormData"
           class="required"
           :rules="rules"
           label="Cargo"
-          :items="['Professor(a)', 'Coordenador(a) / Diretor(a)', 'Profissional da Cozinha']"
+          :items="officeTypes"
+          item-title="label"
+          item-value="name"
           density="comfortable"
           variant="underlined"
-        ></v-select>
-      </div>
-      <div>
+        />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="py-0" cols="12" lg="6" md="6" sm="12">
         <v-select
           class="required"
+          v-model="formData.school"
+          @update:modelValue="(value) => {changeSchool(value); updateFormData()}"
           :rules="rules"
           label="Escola"
-          :items="['EMEI Alto Vera Cruz', 'EMEI Teste1', 'EMEI Teste2',]"
+          :items="schools"
+          item-title="NMESCOLA"
+          item-value="ID"
           density="comfortable"
           variant="underlined"
-        ></v-select>
-      </div>
-      <div>
+          :loading="loadingSchool"
+          :disabled="loadingSchool"
+        />
+      </v-col>
+      <v-col class="py-0">
         <v-select
           class="required"
+          v-model="formData.classId"
+          @update:modelValue="updateFormData"
           :rules="rules"
           label="Turma"
-          :items="['Turma dos Amigos 5/6 Anos', 'Turma Beija Flor 3/4 Anos',]"
+          :items="allClass"
+          item-title="NMTURMA"
+          item-value="ID"
           density="comfortable"
           variant="underlined"
-        ></v-select>
-      </div>
-      <section class="inputs d-flex flex-column">
-        <v-row>
-
-        </v-row>
-        <v-row>
-
-        </v-row>
-      </section>
-      <v-btn color="primary">Confirmar</v-btn>
-    </v-form>
-  </v-container>
+          :loading="loadingClass"
+          :disabled="loadingClass || !formData.school"
+        />
+      </v-col>
+    </v-row>
+  </v-form>
 </template>
 <script lang="js">
-import { ref } from 'vue';
+import { ref, watch, toRefs } from 'vue';
 import Rule from '@/util/Rule';
 import Login from '@/controllers/Login';
+import School from '@/controllers/School';
+import ClassController from '@/controllers/ClassController';
 
 export default {
   name: 'user-form',
   components: {},
+  props: ['modelValue'],
   methods: {
     async login() {
       const isValid = await this.$refs.form.validate();
@@ -86,18 +99,79 @@ export default {
       }
     },
   },
-  setup() {
+  setup(props, { emit }) {
     const visible = ref(false);
+    const loadingSchool = ref(true);
+    const loadingClass = ref(false);
+    const schools = ref([]);
+    const allClass = ref([]);
+    const { modelValue } = toRefs(props);
     const formData = ref({
       name: null,
       email: null,
+      office: null,
+      school: null,
+      classId: null,
+      ...modelValue.value,
     });
+    // watch(
+    //   () => modelValue,
+    //   (newValue) => {
+    //     formData.value = { ...newValue };
+    //   }
+    // );
+    const changeSchool = () => {
+      loadingClass.value = true;
+      ClassController.list(formData.value.school).then(result => {
+        allClass.value = result;
+        if (result.length === 1) {
+          formData.value.classId = result[0].ID;
+        }
+      }).finally(() => loadingClass.value = false);
+    }
+    School.list().then(data => {
+      schools.value = data;
+      if (data.length === 1) {
+        formData.value.school = data[0].ID;
+        changeSchool();
+      }
+    }).finally(() => loadingSchool.value = false);
+    const officeTypes = [
+      {
+        name: 'TEACHER',
+        label: 'Professor(a)'
+      },
+      {
+        name: 'SUPERVISOR',
+        label: 'Diretor(a) / Coordenador(a)'
+      },
+      {
+        name: 'KITCHEN',
+        label: 'Profissional da Cozinha'
+      }
+    ];
+
+    const updateFormData = () => {
+      emit('update:modelValue', { ... formData.value });
+    };
+
+    watch(modelValue, (newValue) => {
+      formData.value = { ...newValue };
+    });
+
     return {
       visible,
+      schools,
+      allClass,
+      loadingClass,
+      updateFormData,
+      changeSchool,
+      officeTypes,
       rules: [
         Rule.required(),
       ],
       formData,
+      loadingSchool,
     }
   }
 }

@@ -2,20 +2,15 @@
   <div class="menu-app d-flex flex-column">
     <div class="menu-slot" v-for="menu in menuItems" :key="menu.name" :class="menu.isActive ? 'active-menu' : ''" @click="() => menuClick(menu, menuItems)">
       <!-- MenuItem without submenu's -->
-      <v-tooltip v-if="showToolTip(menu)" :text="'teste'" right content-class="menu-tooltip">
+      <v-tooltip v-if="showToolTip(menu)" right content-class="menu-tooltip">
         <template v-slot:activator="{ on, props }">
-          <!-- <v-btn variant="text" tile icon v-bind="props" v-on="on" :link="true" :to="getMenuLink(menu)">
-            <v-icon>
-              {{ menu.icon }}
-            </v-icon>
-          </v-btn> -->
           <router-link
             class="menu-link"
             :to="{ path: getMenuLink(menu) }"
             v-bind="props"
-            v-on="on"
+            v-on="on || {}"
           >
-            <v-icon>{{ menu.icon }}</v-icon>
+            <v-icon>{{ menu.isActive ? menu.selectedMenuIcon || menu.icon : menu.icon }}</v-icon>
           </router-link>
         </template>
         <span>{{ menu.label }}</span>
@@ -23,16 +18,11 @@
 
       <!-- MenuItem with submenu's -->
       <v-btn v-else tile icon>
-        <!-- <v-icon class="menu-item">
-          {{ menu.icon }}
-        </v-icon> -->
-        <!-- <template v-slot:activator="{ on, attrs }"> -->
-          <v-btn tile icon :link="true" :to="getMenuLink(menu)">
-            <v-icon>
-              {{ menu.icon }}
-            </v-icon>
-          </v-btn>
-        <!-- </template> -->
+        <v-btn tile icon :link="true" :to="getMenuLink(menu)">
+          <v-icon>
+            {{ menu.icon }}
+          </v-icon>
+        </v-btn>
         <div class="submenu" v-if="Array.isArray(menu.submenu) && menu.submenu.length">
           <ul class="elevation-9">
             <li
@@ -54,10 +44,10 @@
 <script lang="js">
 import { ref } from 'vue';
 import Menu from '@/controllers/Menu.js';
+import AccessControl from '@/util/AccessControl';
 
 export default {
   name: 'MenuApp',
-  props: ['items'],
   methods: {
     hasSubMenu(menu, subMenuToFind) {
       if(!Array.isArray(menu.submenu)) return false;
@@ -84,8 +74,8 @@ export default {
       return { path: submenu.href }
     },
   },
-  setup(props) {
-    const menu = [...Menu.getMenuWithAccessControl(props.items)];
+  setup() {
+    const menu = AccessControl.getMenu();
     Menu.setDefaultIsActive(menu);
     const menuItems = ref(menu);
     return {

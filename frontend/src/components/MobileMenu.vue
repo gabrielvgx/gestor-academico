@@ -1,17 +1,10 @@
 <template>
-  <v-card :class="`h-100 ${ drawer ? 'w-100' : ''}`"  style="z-index: 2000; position: absolute; background-color: transparent;">
+  <v-card :class="`h-100 ma-0 ${ drawer ? 'w-100' : ''}`"  style="z-index: 2000; position: absolute; background-color: transparent;">
     <v-layout class="h-100">
       <v-navigation-drawer
         v-model="drawer"
         temporary
       >
-        <!-- <v-list-item
-          prepend-avatar="https://randomuser.me/api/portraits/men/78.jpg"
-          title="John Leider"
-        ></v-list-item>
-
-        <v-divider></v-divider> -->
-
         <v-list density="compact" nav>
           <v-list-item
             v-for="(menu, idx) in menuItems"
@@ -23,27 +16,17 @@
           ></v-list-item>
         </v-list>
       </v-navigation-drawer>
-      <!-- <v-main style="height: 250px">
-        <div class="d-flex justify-center align-center h-100">
-          <v-btn
-            color="primary"
-            @click.stop="drawer = !drawer"
-          >
-            Toggle
-          </v-btn>
-        </div>
-      </v-main> -->
     </v-layout>
   </v-card>
 </template>
 <script lang="js">
+import AccessControl from '@/util/AccessControl';
 import { EventModule } from '@/util/EventModule.js';
 import { onUnmounted, onMounted, ref } from 'vue';
   export default {
-    props: ['items'],
-    setup(props) {
+    setup() {
       const drawer = ref(null);
-      const menuItems = ref(props.items);
+      const menuItems = ref(AccessControl.getMenu());
       const openMenu = () => {
         drawer.value = true;
       };
