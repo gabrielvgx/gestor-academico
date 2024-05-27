@@ -23,8 +23,8 @@ class Material {
     return (new DB())->execute(Query::get('DELETE_MATERIAL'), $params);
   }
 
-  static function getNumberUser() {
-    return (new DB())->fetch(Query::get('NUMBER_USER'));
+  static function readMaterialRequest($params) {
+    return (new DB())->fetch(Query::get('READ_MATERIAL_REQUEST'), $params);
   }
 
   static function readMaterialRequestCount($params) {

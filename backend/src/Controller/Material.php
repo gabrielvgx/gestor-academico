@@ -63,4 +63,23 @@ class Material {
         return ResponseHandler::error($response, $error);
       }
     }
+
+    public function readMaterialRequest(Request $request, Response $response) {
+      try {
+        $params = $request->getQueryParams();
+        $tokenData = $request->getAttribute('token')['data'];
+        $profile = $tokenData->PROFILE;
+        $userId = $profile === 'SUPERVISOR' ? null : $tokenData->ID;
+        $result = MaterialProvider::readMaterialRequest([
+          $params['school'] ?? 1,
+          $params['status'] ?? 'PENDENTE',
+          $userId,
+        ]);
+        return ResponseHandler::success($response, [
+          'data' => $result,
+        ]);
+      } catch(\Exception $error){
+        return ResponseHandler::error($response, $error);
+      }
+    }
 }

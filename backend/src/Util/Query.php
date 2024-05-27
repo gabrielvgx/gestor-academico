@@ -26,52 +26,46 @@ SQL,
       'DSB_PLANNING' => <<<SQL
         WITH RECURSIVE dates AS (
           SELECT
-            CAST('2024-04-01' AS DATE) AS data
+            CAST('2024-05-01' AS DATE) AS data
           UNION ALL
           SELECT DATE_SUB(DATE_ADD(data, INTERVAL 7 DAY), INTERVAL WEEKDAY(DATE_ADD(data, INTERVAL 7 DAY)) DAY)
           FROM dates
           WHERE data <= '2024-05-31'
-        )
-        SELECT
-          data AS DTINICIALPLANO,
-          PS.DTFINALPLANO,
-          U.ID AS IDUSUARIO,
-          U.NMUSUARIO,
-          PS.ID AS IDPLANO,
+)
+        SELECT 
+          DATE_FORMAT(data, '%d/%m/%Y') AS DTINICIAL,
+          P.ID,
           E.ID AS IDESCOLA,
           E.NMESCOLA,
           T.ID AS IDTURMA,
           T.NMTURMA,
+          U.NMUSUARIO,
           CASE
-            WHEN (PS.STATUS IS NOT NULL AND PS.STATUS = 'Concluído')
+            WHEN (P.STATUS IS NOT NULL AND P.STATUS = 'APROVADO')
             THEN
               CASE
-                WHEN DATEDIFF(PS.DTINICIALPLANO, PS.DTINCLUSAO) >= 3
+                WHEN DATEDIFF(data, P.DTINCLUSAO) >= 3
                 THEN 'ENTREGUE_NO_PRAZO'
                 ELSE 'ENTREGUE_ATRASADO'
               END
             ELSE 'NAO_ENTREGUE'
           END STATUS
-        FROM (
+          FROM (
             SELECT data
             FROM dates
             WHERE DAYOFWEEK(data) = 2
             AND MONTH(data) >= MONTH('2024-04-01')
             AND MONTH(data) <= MONTH('2024-05-31')
         ) AS MONDAYS
-        CROSS JOIN USUARIOINSTITUICAO UI
-        INNER JOIN USUARIO U
-          ON UI.IDUSUARIO = U.ID
+        CROSS JOIN TURMA T
         INNER JOIN ESCOLA E
-          ON UI.IDESCOLA = E.ID
-        INNER JOIN TURMA T
-          ON UI.IDESCOLA = T.IDESCOLA
-            AND UI.IDTURMA = T.ID
-        LEFT JOIN PLANEJAMENTOSEMANAL PS
-          ON PS.IDUSERINCLUSAO = U.ID
-          AND PS.DTINICIALPLANO = data
-          AND PS.IDESCOLA = UI.IDESCOLA
-          AND PS.IDTURMA = UI.IDTURMA
+          ON E.ID = T.IDESCOLA
+        LEFT JOIN PLANEJAMENTO P
+          ON P.DTPLANO = data
+          AND P.IDESCOLA = E.ID
+          AND P.IDTURMA = T.ID
+        LEFT JOIN USUARIO U
+          ON P.IDUSERINCLUSAO = U.ID
 SQL,
       'READ_MATERIAL' => "SELECT ID, NMMATERIAL, DSMATERIAL FROM MATERIAL",
       'READ_SCHOOL' => "SELECT ID, NMESCOLA FROM ESCOLA",
@@ -205,16 +199,14 @@ SQL,
           M.NMMATERIAL
         FROM
           REQUISICAOMATERIAL RM
-          INNER JOIN USUARIOINSTITUICAO UI
-            ON RM.IDESCOLA = UI.IDESCOLA
-            AND UI.IDUSUARIO = ?
           INNER JOIN MATERIAL M
             ON RM.IDMATERIAL = M.ID
           INNER JOIN USUARIO U
             ON U.ID = RM.IDUSERINCLUSAO
         WHERE
-          RM.STATUS = 'PENDENTE'
-
+          RM.IDESCOLA = ?
+          AND RM.STATUS = ?
+          AND RM.IDUSERINCLUSAO = COALESCE(?, RM.IDUSERINCLUSAO)
 SQL,
       'READ_MATERIAL_REQUEST_COUNT' => <<<SQL
         SELECT
