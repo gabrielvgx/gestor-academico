@@ -90,3 +90,26 @@ INSERT INTO MATERIAL (NMMATERIAL, DSMATERIAL, IDUSERINCLUSAO) VALUES
 ('Lápis de cor', 'Lápis de cor 24 cores', '632d8eee-cc52-49ed-9338-939af6296880');
 
 /
+
+INSERT INTO REQUISICAOMATERIAL (IDMATERIAL, IDESCOLA, IDUSERINCLUSAO, STATUS, DSJUSTIFICATIVA, DTUTILIZACAO)
+VALUES
+(1, 1, '632d8eee-cc52-49ed-9338-939af6296880', 'PENDENTE', 'Material necessário para aula de artes.', '2024-06-01'),
+(2, 1, '632d8eee-cc52-49ed-9338-939af6296880', 'APROVADO', 'Uso em atividades de matemática.', '2024-06-02'),
+(3, 1, '632d8eee-cc52-49ed-9338-939af6296880', 'REPROVADO', 'Solicitação para projetos de ciências.', '2024-06-03'),
+(4, 1, '632d8eee-cc52-49ed-9338-939af6296880', 'PENDENTE', 'Necessário para educação física.', '2024-06-04'),
+(5, 1, '632d8eee-cc52-49ed-9338-939af6296880', 'APROVADO', 'Materiais de apoio para leitura.', '2024-06-05'),
+(6, 1, '632d8eee-cc52-49ed-9338-939af6296880', 'REPROVADO', 'Recurso audiovisual para aulas.', '2024-06-06'),
+(7, 1, '632d8eee-cc52-49ed-9338-939af6296880', 'PENDENTE', 'Material para trabalhos manuais.', '2024-06-07'),
+(8, 1, '632d8eee-cc52-49ed-9338-939af6296880', 'APROVADO', 'Uso em aulas de música.', '2024-06-08'),
+(9, 1, '632d8eee-cc52-49ed-9338-939af6296880', 'REPROVADO', 'Necessário para ensino de história.', '2024-06-09'),
+(10, 1, '632d8eee-cc52-49ed-9338-939af6296880', 'PENDENTE', 'Materiais para experimentos químicos.', '2024-06-10'),
+(1, 1, '632d8eee-cc52-49ed-9338-939af6296880', 'APROVADO', 'Uso em aulas de geografia.', '2024-06-11'),
+(2, 1, '632d8eee-cc52-49ed-9338-939af6296880', 'REPROVADO', 'Recurso didático para português.', '2024-06-12'),
+(3, 1, '632d8eee-cc52-49ed-9338-939af6296880', 'PENDENTE', 'Material de apoio para educação infantil.', '2024-06-13'),
+(4, 1, '632d8eee-cc52-49ed-9338-939af6296880', 'APROVADO', 'Uso em atividades de artes plásticas.', '2024-06-14'),
+(5, 1, '632d8eee-cc52-49ed-9338-939af6296880', 'REPROVADO', 'Solicitação para esportes.', '2024-06-15'),
+(6, 1, '632d8eee-cc52-49ed-9338-939af6296880', 'PENDENTE', 'Material de apoio para leitura.', '2024-06-16'),
+(7, 1, '632d8eee-cc52-49ed-9338-939af6296880', 'APROVADO', 'Uso em projetos de ciências.', '2024-06-17'),
+(8, 1, '632d8eee-cc52-49ed-9338-939af6296880', 'REPROVADO', 'Necessário para aula de música.', '2024-06-18'),
+(9, 1, '632d8eee-cc52-49ed-9338-939af6296880', 'PENDENTE', 'Solicitação para ensino de história.', '2024-06-19'),
+(10, 1, '632d8eee-cc52-49ed-9338-939af6296880', 'APROVADO', 'Materiais para experiências químicas.', '2024-06-20');

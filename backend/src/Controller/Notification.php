@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Provider\Notification as NotificationProvider;
 use App\Provider\Planning;
+use App\Provider\Material;
 use App\Util\ResponseHandler;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -14,9 +15,13 @@ SUPERVISOR -> Requisição de material não analisada
 */
     private function getSupervisorNotifications($userId) {
       list ($pendingPlanning) = Planning::readQtPending([$userId]);
+      list ($pendingMaterialRequest) = Material::readMaterialRequestCount([$userId]);
+
       $numPlanning = $pendingPlanning && isset($pendingPlanning['NUM_PLANEJAMENTO']) ? $pendingPlanning['NUM_PLANEJAMENTO'] : 0;
+      $numMaterialRequest = $pendingMaterialRequest && isset($pendingMaterialRequest['NUM_MATERIAL_REQUEST']) ? $pendingMaterialRequest['NUM_MATERIAL_REQUEST'] : 0;
       return [
         'PENDING_PLANNING' => $numPlanning,
+        'PENDING_MATERIAL_REQUEST' => $numMaterialRequest,
       ];
     }
 

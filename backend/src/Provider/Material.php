@@ -26,4 +26,8 @@ class Material {
   static function getNumberUser() {
     return (new DB())->fetch(Query::get('NUMBER_USER'));
   }
+
+  static function readMaterialRequestCount($params) {
+    return (new DB())->fetch(Query::get('READ_MATERIAL_REQUEST_COUNT'), $params);
+  }
 }
