@@ -71,7 +71,7 @@ export default {
   emits: ['click'],
   methods: {
     logout() {
-      EventModule.emit('logout');
+      EventModule.emit('confirmMessage', { event: 'logout-confirm', message: 'Deseja realmente sair do sistema?' });
     },
     openMenu() {
       EventModule.emit('open-menu');
@@ -117,12 +117,12 @@ export default {
     };
     onMounted(() => {
       EventModule.on('change-page', onChangePage);
-      EventModule.on('confirm-logout', Login.logout);
+      EventModule.on('logout-confirm', Login.logout);
       window.addEventListener('resize', onResize);
     });
     onUnmounted(() => {
       EventModule.off('change-page', onChangePage);
-      EventModule.off('confirm-logout', Login.logout);
+      EventModule.off('logout-confirm', Login.logout);
       window.removeEventListener('resize', onResize);
     });
     return {

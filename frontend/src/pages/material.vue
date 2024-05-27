@@ -11,7 +11,7 @@
       </Grid>
       <Modal v-if="openedModal" :modal="{ title: 'Cadastro de Material'}" @close="closeModal" @confirm="modalConfirm">
         <template #content>
-          <MaterialForm v-model="formData" />
+          <MaterialForm ref="addMaterialRef" v-model="formData" />
         </template>
       </Modal>
     </template>
@@ -27,6 +27,8 @@ import Material from '@/controllers/Material';
 import Panel from '@/components/Panel';
 import { ref } from 'vue';
 import Alert from '@/util/Alert';
+import { EventModule } from '@/util/EventModule';
+import { onUnmounted } from 'vue';
 
 export default {
   components: {
@@ -43,14 +45,22 @@ export default {
       if (this.grid) {
         const rows = this.grid.getSelectedRows();
         if (rows.length) {
-          Material.remove(rows);
+          EventModule.emit('confirmMessage', { event: 'remove-material', message: `Confirma a exclusão de ${rows.length} materiais?`})
         } else {
           Alert.showWarn('Selecione ao menos um item');
         }
       }
     },
-    modalConfirm() {
-      Material.create(this.formData).then(() => this.openedModal = false);
+    async modalConfirm() {
+      const isValid = await this.$refs.addMaterialRef.isValid();
+      if (isValid) {
+        const data = this.$refs.addMaterialRef.getValue();
+        const success =  await Material.create(data);
+        if (success) {
+          this.openedModal = false;
+          this.grid.reload();
+        }
+      }
     },
     closeModal() {
       this.openedModal = false;
@@ -60,10 +70,21 @@ export default {
     const openedModal = ref(false);
     const formData = ref({});
     const grid = ref(null);
+    const removeMaterial = async () => {
+      const success = await Material.remove(grid.value.getSelectedRows());
+      if (success) {
+        grid.value.reload();
+      }
+    }
+    EventModule.on('remove-material', removeMaterial);
+    onUnmounted(() => {
+      EventModule.off('remove-material', removeMaterial);
+    })
     return {
       openedModal,
       formData,
       grid,
+      removeMaterial,
       gridConfig: {
         // title: 'Usuários',
         itemValue: 'ID',
@@ -71,6 +92,10 @@ export default {
           {
             title: 'Material',
             key: 'NMMATERIAL',
+          },
+          {
+            title: 'Descrição',
+            key: 'DSMATERIAL',
           },
         ],
         loadData: async function() {

@@ -17,6 +17,11 @@
   --orange: #f87060;
   --white: #f5f5f5;
 
+  --red-text: #f44336;
+  --gray-text: #757575;
+  --green-text: #4caf50;
+  --yellow-text: #ffeb3b;
+
   --v-input-padding-top: 6px;
   --header-size: 64px;
   --footer-size: 35px;
@@ -108,7 +113,8 @@ body > div:not(#app) {
   // margin-top: var(--header-size) !important;
 }
 // .v-container:not(.after-login),
-.v-main > .v-container:not(.after-login) {
+.v-main > .v-container:not(.after-login),
+.login-container {
   margin-top: 0 !important;
 }
 

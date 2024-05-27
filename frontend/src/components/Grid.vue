@@ -12,7 +12,7 @@
       :items-length="totalSize"
       :group-by="groupBy"
       hover
-      show-select
+      :show-select="showSelect"
       @click:row="onClickRow"
       height="350"
       fixed-header
@@ -25,6 +25,7 @@
       <tr>
         <td :colspan="columns.length">
           <v-btn
+            v-if="showGroupActions"
             class="ms-2"
             icon="mdi-delete"
             variant="outlined"
@@ -43,6 +44,7 @@
           />
           {{ item.items[0].value[groupDescription] }}
           <v-btn
+            v-if="showGroupActions"
             class="ms-2"
             icon="mdi-plus"
             variant="flat"
@@ -75,8 +77,7 @@ export default {
     async reload() {
       try {
         this.loading = true;
-        const result = await this.loadData();
-        this.tableData = result;
+        await this.loadData();
       } catch (err) {
         console.error(err.message);
       } finally {
@@ -88,7 +89,6 @@ export default {
         const { data, total } = await this.config.loadData(params);
         this.tableData = data;
         this.totalSize = total;
-
       } else {
         return [];
       }
@@ -106,6 +106,8 @@ export default {
     const groupDescription = props.config.groupDescription || '';
     const hasChildren = props.config.hasChildren || (() => true);
     const onClickRow = props.config.onClickRow || (() => {});
+    const showGroupActions = props.config.showGroupActions || false;
+    const showSelect = ('showSelect' in props.config) ? props.config.showSelect : true;
     return {
       search,
       getSelectedRows() {
@@ -121,6 +123,8 @@ export default {
       groupDescription,
       hasChildren,
       onClickRow,
+      showGroupActions,
+      showSelect,
     }
   }
 }

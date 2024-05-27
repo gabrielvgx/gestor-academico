@@ -1,7 +1,7 @@
 <template>
   <v-form ref="form">
     <v-row>
-      <v-col cols="12" lg="6" md="6" sm="12">
+      <v-col class="py-0" cols="12" lg="6" md="6" sm="12">
         <div class="text-subtitle-1 required">Nome</div>
         <v-text-field
           v-model="formData.name"
@@ -14,7 +14,7 @@
           autocomplete="name"
         />
       </v-col>
-      <v-col>
+      <v-col class="py-0">
         <div class="text-subtitle-1 required">E-mail</div>
         <v-text-field
           v-model="formData.email"
@@ -29,7 +29,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col>
+      <v-col class="py-0">
         <v-select
           v-model="formData.office"
           @update:modelValue="updateFormData"
@@ -45,7 +45,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12" lg="6" md="6" sm="12">
+      <v-col class="py-0" cols="12" lg="6" md="6" sm="12">
         <v-select
           class="required"
           v-model="formData.school"
@@ -61,7 +61,7 @@
           :disabled="loadingSchool"
         />
       </v-col>
-      <v-col>
+      <v-col class="py-0">
         <v-select
           class="required"
           v-model="formData.classId"

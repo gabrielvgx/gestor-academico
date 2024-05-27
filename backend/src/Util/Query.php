@@ -8,7 +8,19 @@ class Query {
       'USER_EMAIL_PASSWORD' => "SELECT * FROM USUARIO WHERE EMAIL = ? AND PASSWORD = ?",
       'USER_EMAIL' => "SELECT * FROM USUARIO WHERE EMAIL = ?",
       'CREATE_USER' => "INSERT INTO USUARIO (ID, NMUSUARIO, CARGO, EMAIL, PASSWORD) VALUES (?, ?, ?, ?, ?)",
-      'READ_USER' => "SELECT * FROM USUARIO",
+      'READ_USER' => <<<SQL
+        SELECT
+          U.ID,
+          U.NMUSUARIO,
+          U.EMAIL,
+          CASE U.CARGO
+            WHEN 'TEACHER' THEN 'Professor'
+            WHEN 'SUPERVISOR' THEN 'Supervisor'
+            WHEN 'KITCHEN' THEN 'Cozinha'
+          END AS CARGO
+        FROM
+          USUARIO U
+SQL,
       'USER_REDEFINE_PASSWORD' => "UPDATE USUARIO SET PASSWORD = ? WHERE ID = ?",
       'NUMBER_USER' => "SELECT COUNT(ID) QTUSER FROM USUARIO",
       'DSB_PLANNING' => <<<SQL
@@ -155,6 +167,33 @@ SQL,
             ON INSTR(PL.IDBNCC, CONCAT('|', PL.IDBNCC, '|')) <> 0
         WHERE PL.ID = ?
 SQL,
+      'GET_PLANNING' => <<<SQL
+        SELECT
+          P.*,
+          T.NMTURMA,
+          WEEK(P.DTPLANO) AS SEMANA,
+          DATE_FORMAT(DTPLANO, '%d/%m/%Y') AS DTINICIAL,
+          DATE_FORMAT(DATE_ADD(DTPLANO, INTERVAL 4 DAY), '%d/%m/%Y') AS DTFINAL,
+          CONCAT_WS(' - ', DATE_FORMAT(DTPLANO, '%d/%m/%Y'), DATE_FORMAT(DATE_ADD(DTPLANO, INTERVAL 4 DAY), '%d/%m/%Y')) AS PERIODO
+        FROM
+          PLANEJAMENTO P
+          INNER JOIN TURMA T
+          ON P.IDTURMA = T.ID
+        WHERE
+          P.IDESCOLA = ?
+          AND P.STATUS = ?
+          AND MONTH(P.DTPLANO) = ?
+          AND YEAR(P.DTPLANO) = ?
+          AND WEEKDAY(P.DTPLANO) = 0
+        ORDER BY
+        P.DTPLANO DESC
+SQL,
+      'DELETE_MATERIAL' => <<<SQL
+      DELETE FROM MATERIAL
+      WHERE ID = ?
+SQL,
+      'READ_MATERIAL_COUNT' => 'SELECT COUNT(*) AS NRMATERIAL FROM MATERIAL',
+      'CREATE_MATERIAL' => 'INSERT INTO MATERIAL (NMMATERIAL, DSMATERIAL, IDUSERINCLUSAO) VALUES (?, ?, ?)',
     ],
   ];
 

@@ -10,8 +10,40 @@ VALUES
 (
   '632d8eee-cc52-49ed-9338-939af6296880',
   'Teste',
-  'PROFESSOR',
+  'SUPERVISOR',
   'teste@teste.com',
+  '46070d4bf934fb0d4b06d9e2c46e346944e322444900a435d7d9a95e6d7435f5' -- teste
+);
+INSERT INTO `usuario`
+(
+  ID,
+  NMUSUARIO,
+  CARGO,
+  EMAIL,
+  PASSWORD
+)
+VALUES
+(
+  'bc63637b-f4d5-4ddf-8465-9b63e1ad8b71',
+  'Teste2',
+  'TEACHER',
+  'teste2@teste.com',
+  '46070d4bf934fb0d4b06d9e2c46e346944e322444900a435d7d9a95e6d7435f5' -- teste
+);
+INSERT INTO `usuario`
+(
+  ID,
+  NMUSUARIO,
+  CARGO,
+  EMAIL,
+  PASSWORD
+)
+VALUES
+(
+  'b2310879-047c-4f5c-801e-90fe18db6146',
+  'Teste3',
+  'KITCHEN',
+  'teste3@teste.com',
   '46070d4bf934fb0d4b06d9e2c46e346944e322444900a435d7d9a95e6d7435f5' -- teste
 );
 

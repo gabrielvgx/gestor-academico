@@ -3,11 +3,11 @@
     <div class="graph-list w-100 h-100">
       <CardList :data="cards" @onClick="(card) => $router.push({ path: `/${card.name}`})" />
       <Pie
-        v-if="loadedPlanning"
+        v-if="loadedPlanning && isSupervisor"
         :options="planningOptions"
         @onSelect="onSelectPlanning"
       />
-      <Bar :options="{chartName: 'food-graph'}" ></Bar>
+      <Bar v-if="isSupervisor" :options="{chartName: 'food-graph'}" ></Bar>
     </div>
     <Modal v-if="false" :modal="{}"></Modal>
   </v-container>
@@ -20,6 +20,7 @@ import Modal from '@/components/Modal';
 import CardList from '@/components/CardList';
 import DashboardController from '@/controllers/Dashboard';
 import { ref } from 'vue';
+import Token from '@/util/Token';
 
 export default {
   name: 'dashboard',
@@ -37,6 +38,7 @@ export default {
   setup() {
     const planningOptions = ref({});
     const loadedPlanning = ref(false);
+    const isSupervisor = Token.getUserProfile() === 'SUPERVISOR';
     DashboardController.getPlanningGraphOptions().then(planning => {
       planningOptions.value = planning;
       loadedPlanning.value = true;
@@ -44,6 +46,7 @@ export default {
     return {
       loadedPlanning,
       planningOptions,
+      isSupervisor,
       rules: [
         Rule.required(),
       ],
@@ -59,10 +62,26 @@ export default {
           name: 'planning-management',
           title: 'Planejamentos Pendentes',
           content: '12',
-          icon: 'mdi-book-clock',
+          icon: 'mdi-book-clock-outline',
           color: 'warning',
           footer: '',
-        }
+        },
+        {
+          name: 'planning-rejected',
+          title: 'Planejamentos Rejeitados',
+          content: '12',
+          icon: 'mdi-book-cancel-outline',
+          color: 'error',
+          footer: '',
+        },
+        {
+          name: 'planning-rejected',
+          title: 'Solicitações de Material Rejeitadas',
+          content: '12',
+          icon: 'mdi-clipboard-remove-outline',
+          color: 'error',
+          footer: '',
+        },
       ],
     }
   }

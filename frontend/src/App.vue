@@ -1,4 +1,5 @@
 <template>
+  <NotificationList />
   <v-app>
     <notifications :duration='2000' style='padding-top: 1rem' />
     <v-dialog
@@ -8,7 +9,7 @@
       <v-card
         max-width="400"
         prepend-icon="mdi-alert-circle-outline"
-        text="Deseja realmente sair do sistema?"
+        :text="dialogText"
         title="Confirmação"
       >
         <template v-slot:actions>
@@ -23,7 +24,7 @@
               text="Sim"
               color="primary"
               variant="flat"
-              @click="logoutApp"
+              @click="confirmDialog"
             ></v-btn>
           </v-container>
         </template>
@@ -31,7 +32,7 @@
     </v-dialog>
     <MobileMenu v-if="useMobileMenu && isAfterLogin" />
     <v-container :class='`container-app ${isAfterLogin ? "after-login" : ""}`'>
-      <AppBar v-if="isAfterLogin" />
+      <AppBar v-if="isAfterLogin" @click="openNotification"/>
       <WebMenu v-if="!useMobileMenu && isAfterLogin"></WebMenu>
       <v-main :class='`pa-0 ${isAfterLogin ? "after-login" : ""}`'>
         <router-view />
@@ -42,10 +43,11 @@
 </template>
 
 <script lang="js">
-import AppFooter from './components/AppFooter.vue';
-import AppBar from './components/AppBar.vue';
-import WebMenu from './components/Menu.vue';
-import MobileMenu from './components/MobileMenu.vue';
+import AppFooter from './components/AppFooter';
+import AppBar from './components/AppBar';
+import WebMenu from './components/Menu';
+import MobileMenu from './components/MobileMenu';
+import NotificationList from './components/NotificationList';
 import App from '@/util/App.js';
 import { EventModule } from './util/EventModule';
 import { ref } from 'vue';
@@ -59,23 +61,35 @@ export default {
     AppFooter,
     WebMenu,
     MobileMenu,
+    NotificationList,
   },
   methods: {
-    logoutApp() {
-      EventModule.emit('confirm-logout');
+    confirmDialog() {
+      EventModule.emit(this.callbackEventDialog);
+      this.dialog = false;
+    },
+    openNotification({ action }) {
+      console.log(action);
+      if (action.name === 'notification') {
+        EventModule.emit('openNotificationBar');
+      }
     }
   },
   setup() {
     const useMobileMenu = ref(App.isMobile());
     const route = useRoute();
-    const logoutDialog = ref(false);
+    const dialog = ref(false);
+    const dialogText = ref('');
+    const callbackEventDialog = ref('');
     const routesBeforeLogin = ['/', ...App.getPublicRoutes()];
     const isAfterLogin = ref(!routesBeforeLogin.includes(route.path));
     EventModule.on('change-page', ({ path }) => {
       isAfterLogin.value = !routesBeforeLogin.includes(path);
     });
-    EventModule.on('logout', () => {
-      logoutDialog.value = true;
+    EventModule.on('confirmMessage', ({ event, message }) => {
+      dialogText.value = message;
+      dialog.value = true;
+      callbackEventDialog.value = event;
     });
     const onResize = () => {
       useMobileMenu.value = App.isMobile();
@@ -89,7 +103,9 @@ export default {
     return {
       useMobileMenu,
       isAfterLogin,
-      dialog: logoutDialog,
+      dialog,
+      dialogText,
+      callbackEventDialog,
     }
   }
 }
@@ -105,7 +121,7 @@ export default {
   justify-content: center;
   gap: 1rem;
 }
-.container-app {
+.container-app.after-login {
   display: flex;
   margin: 0;
   padding: 0;
@@ -116,6 +132,15 @@ export default {
     margin-bottom: 1rem;
   }
 }
+
+.container-app:not(.after-login) {
+  margin: 0;
+  padding: 0;
+  .v-main {
+    height: 100vh;
+  }
+}
+
 @media screen and (min-width: 500px) {
   .container-app {
     max-width: 100%;

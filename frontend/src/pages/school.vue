@@ -63,6 +63,7 @@ export default {
         // { key: 'NMESCOLA', order: 'asc' },
       ],
       groupDescription: 'NMESCOLA',
+      showGroupActions: true,
       hasChildren(row){
         return row.items.some(item => item.value.IDTURMA);
       },

@@ -1,6 +1,6 @@
 <template>
   <v-container class="pa-0 my-0">
-    <v-chart :id="chartName" class='chart' :option='option' @selectchanged="onSelectChanged" />
+    <v-chart ref="chartRef" :id="chartName" class='chart' :option='option' @selectchanged="onSelectChanged" />
   </v-container>
 </template>
 
@@ -51,6 +51,7 @@ export default {
       chartName,
       color = ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'],
     } = props.options;
+    const chartRef = ref(null);
     const handleResize = () => {
       const el = document.getElementById(chartName);
       const graphEl = el && el.children ? el.children[0] : null
@@ -63,6 +64,10 @@ export default {
     onUnmounted(() => {
       window.removeEventListener('resize', handleResize);
     });
+    // const base64Image = chartRef.value.getDataURL({
+    //   type: 'webp',
+    //   backgroundColor: '#fff',
+    // });
     const option = ref({
       title: {
         text: titleText,
@@ -102,7 +107,7 @@ export default {
         },
       ],
     });
-    return { option, chartName };
+    return { option, chartName, chartRef };
   }
 }
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <v-container class="pa-0 my-3 d-flex flex-wrap justify-center" style="gap: 1rem">
+  <v-container class="pa-0 my-3 d-flex flex-wrap justify-center align-items-center" style="gap: 1rem">
     <v-card class='card ma-0' v-for='card in cards' :key='card.name' :color='card.color'>
       <v-row class="ma-0 pa-0 h-100" @click="() => $emit('onClick', card)">
         <v-col cols='2' md='2' sm='12' class='d-flex align-center justify-center card-icon'>
@@ -31,10 +31,8 @@ export default {
 .card {
   flex-grow: 1;
   flex-basis: 0;
-  // min-width: 200px;
   max-width: min(100%, 300px);
   min-width: 250px;
-  max-height: 100px;
   cursor: pointer;
   .title-card {
     font-size: 1rem;
