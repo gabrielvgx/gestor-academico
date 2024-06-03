@@ -5,7 +5,7 @@
         <template v-slot:header>
           <v-container class="pa-0 ma-0 d-flex header-actions">
             <v-btn prepend-icon="mdi-plus" color="primary" @click="addGridItem">Adicionar</v-btn>
-            <v-btn prepend-icon="mdi-delete" color="error" variant="outlined" @click="removeGridItem">Remover</v-btn>
+            <!-- <v-btn prepend-icon="mdi-delete" color="error" variant="outlined" @click="removeGridItem">Remover</v-btn> -->
           </v-container>
         </template>
       </Grid>

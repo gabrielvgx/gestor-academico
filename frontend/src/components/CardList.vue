@@ -5,7 +5,7 @@
         <v-col cols='2' md='2' sm='12' class='d-flex align-center justify-center card-icon'>
           <v-icon :icon='card.icon'></v-icon>
         </v-col>
-        <v-col class='d-flex' md="10">
+        <v-col class='d-flex' cols="9" md="9" sm="12">
           <v-row class='my-0 align-center card-info'>
             <v-col class='d-flex py-0 my-0 justify-center title-card prevent-select'>{{ card.title }}</v-col>
             <v-col class='py-0 text-center left-slot' cols='12'>{{ card.content }}</v-col>

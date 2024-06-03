@@ -30,7 +30,7 @@
           }
           onClickGroup(item)}
         ">
-          <v-btn
+          <!-- <v-btn
             v-if="showGroupActions"
             class="ms-2"
             icon="mdi-delete"
@@ -39,7 +39,7 @@
             size="small"
             rounded="lg"
             density="comfortable"
-          />
+          /> -->
           <v-btn
             :class="hasChildren(item) ? '' : 'hide-expand'"
             :disabled="!hasChildren(item)"
