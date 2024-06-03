@@ -21,6 +21,7 @@ import CardList from '@/components/CardList';
 import DashboardController from '@/controllers/Dashboard';
 import { ref } from 'vue';
 import Token from '@/util/Token';
+import { useRoute, useRouter } from 'vue-router';
 
 export default {
   name: 'dashboard',
@@ -38,11 +39,17 @@ export default {
   setup() {
     const planningOptions = ref({});
     const loadedPlanning = ref(false);
-    const isSupervisor = Token.getUserProfile() === 'SUPERVISOR';
+    const userProfile = Token.getUserProfile();
+    const isSupervisor = userProfile === 'SUPERVISOR';
     DashboardController.getPlanningGraphOptions().then(planning => {
       planningOptions.value = planning;
       loadedPlanning.value = true;
     });
+    const route = useRoute();
+    const router = useRouter();
+    if (route.path === '/dashboard' && userProfile === 'KITCHEN') {
+      router.push({ path: '/food-record'});
+    }
     return {
       loadedPlanning,
       planningOptions,

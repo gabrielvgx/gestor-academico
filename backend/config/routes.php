@@ -37,4 +37,6 @@ return function (App $app) {
     $app->get('/period', [\App\Controller\Period::class, 'read']);
 
     $app->get('/education-target', [\App\Controller\EducationTarget::class, 'read']);
+
+    $app->get('/food', [\App\Controller\Food::class, 'read']);
 };

@@ -519,3 +519,42 @@ INSERT INTO REQUISICAOMATERIAL (IDREQUISICAO, IDESCOLA, IDMATERIAL, IDUSERINCLUS
 (UUID(), 1, 8, '75e4f0a9-7a12-4806-887f-2e390d483da3', 'APROVADO', 3, 'Bloco de anotações.', '2024-12-20'),
 (UUID(), 1, 9, '75e4f0a9-7a12-4806-887f-2e390d483da3', 'APROVADO', 2, 'Etiqueta adesiva.', '2024-12-20'),
 (UUID(), 1, 10, '75e4f0a9-7a12-4806-887f-2e390d483da3', 'APROVADO', 4, 'Lápis grafite.', '2024-12-20');
+
+/
+
+INSERT INTO TIPOCONSUMIDOR
+(NMCONSUMIDOR, DSCONSUMIDOR)
+VALUES
+('BERÇÁRIO', '(0 a 11 MESES)'),
+('TURMA 1 e 2 ANOS', '(1 ANO A 2 ANOS E 11 MESES)'),
+('TURMA 3, 4 e 5 ANOS', '(3 ANOS A 5 ANOS E 11 MESES)'),
+('FUNCIONÁRIOS', '')
+/
+INSERT INTO TIPOREFEICAO
+(NMREFEICAO)
+VALUES
+('CAFÉ DA MANHÃ'),
+('ALMOÇO'),
+('LANCHE DA TARDE'),
+('JANTAR');
+
+/
+
+INSERT INTO REGISTROALIMENTAR (DTREFEICAO, IDTIPOREFEICAO, IDTIPOCONSUMIDOR, REPETICAO, SOBRALIMPA, SOBRASUJA, RESTOINGESTA, IDESCOLA, IDUSERINCLUSAO, COMENSAIS, DSALTERACAOCARD)
+VALUES
+    ('2024-06-01', 1, 1, 0, 6.5, 7.8, 8.1, 1, 'b2310879-047c-4f5c-801e-90fe18db6146', 25, 'Sem alterações no cardápio'),
+    ('2024-06-01', 2, 2, 1, 7.2, 6.9, 5.4, 1, 'b2310879-047c-4f5c-801e-90fe18db6146', 45, ''),
+    ('2024-06-01', 3, 3, 2, 8.1, 9.2, 6.5, 1, 'b2310879-047c-4f5c-801e-90fe18db6146', 50, 'Cardápio alterado para incluir vegetais frescos'),
+    ('2024-06-01', 4, 4, 3, 9.7, 5.5, 10.1, 1, 'b2310879-047c-4f5c-801e-90fe18db6146', 30, ''),
+    ('2024-06-02', 1, 2, 4, 10.5, 11.2, 7.3, 1, 'b2310879-047c-4f5c-801e-90fe18db6146', 20, 'Ajuste na receita do prato principal'),
+    ('2024-06-02', 2, 3, 5, 11.0, 8.8, 12.0, 1, 'b2310879-047c-4f5c-801e-90fe18db6146', 40, ''),
+    ('2024-06-02', 3, 4, 6, 5.9, 6.5, 11.3, 1, 'b2310879-047c-4f5c-801e-90fe18db6146', 35, 'Incluído novo tipo de sobremesa'),
+    ('2024-06-02', 4, 1, 0, 6.3, 7.1, 9.4, 1, 'b2310879-047c-4f5c-801e-90fe18db6146', 55, ''),
+    ('2024-06-03', 1, 3, 1, 7.4, 8.3, 10.2, 1, 'b2310879-047c-4f5c-801e-90fe18db6146', 60, ''),
+    ('2024-06-03', 2, 4, 2, 8.7, 9.0, 6.8, 1, 'b2310879-047c-4f5c-801e-90fe18db6146', 70, 'Substituição de ingredientes'),
+    ('2024-06-03', 3, 1, 3, 9.9, 10.1, 7.9, 1, 'b2310879-047c-4f5c-801e-90fe18db6146', 80, ''),
+    ('2024-06-03', 4, 2, 4, 10.3, 11.4, 8.6, 1, 'b2310879-047c-4f5c-801e-90fe18db6146', 90, ''),
+    ('2024-06-04', 1, 4, 5, 11.2, 12.0, 9.8, 1, 'b2310879-047c-4f5c-801e-90fe18db6146', 100, 'Receita de sopa alterada'),
+    ('2024-06-04', 2, 1, 6, 5.5, 6.2, 10.5, 1, 'b2310879-047c-4f5c-801e-90fe18db6146', 110, ''),
+    ('2024-06-04', 3, 2, 0, 6.8, 7.6, 11.9, 1, 'b2310879-047c-4f5c-801e-90fe18db6146', 15, ''),
+    ('2024-06-04', 4, 3, 1, 7.1, 8.5, 9.2, 1, 'b2310879-047c-4f5c-801e-90fe18db6146', 20, 'Cardápio ajustado para incluir mais proteínas');

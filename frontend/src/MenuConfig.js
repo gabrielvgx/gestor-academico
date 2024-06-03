@@ -6,6 +6,7 @@ const config = [
     selectedMenuIcon: 'mdi-home',
     isMainPage: true,
     href: '/dashboard',
+    permissions: ['SUPERVISOR', 'TEACHER']
   },
   {
     name: 'week-planning',
