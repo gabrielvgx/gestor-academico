@@ -17,9 +17,34 @@
         ></v-text-field>
       </div>
       <div>
+        <div class="text-subtitle-1">Data da Solicitação</div>
+        <v-text-field
+            v-model="formData.solicitationDate"
+            type="text"
+            disabled
+            density="compact"
+            variant="outlined"
+        ></v-text-field>
+      </div>
+      <div>
+        <div class="text-subtitle-1" :class="isNew && 'required'">Escola</div>
+        <v-select
+          :disabled="!isNew"
+          v-model="this.formData.schoolId"
+          :items="this.formData.schools"
+          item-title="NMESCOLA"
+          :rules="rules"
+          item-value="ID"
+          density="compact"
+          variant="outlined"
+          :loading="loadingSchool"
+        />
+      </div>
+      <div>
         <div class="text-subtitle-1 required">Previsão de Utilização</div>
         <v-locale-provider locale="BR">
           <v-date-picker
+            :disabled="formData.status === 'APROVADO' || isSupervisor()"
             class="mx-auto"
             :rules="rules"
             hide-header
@@ -30,7 +55,7 @@
           ></v-date-picker>
         </v-locale-provider>
       </div>
-      <div class="d-flex my-3">
+      <div class="d-flex my-3" v-if="formData.status !== 'APROVADO' && !isSupervisor()">
         <v-btn
           color="primary"
           prepend-icon="mdi-plus"
@@ -53,6 +78,7 @@
             <span>{{ material.NMMATERIAL }}</span>
           <template v-slot:append>
             <v-icon
+              v-if="formData.status !== 'APROVADO' && !isSupervisor()"
               class="ms-3"
               @click="() => delete formData.material[material.ID]"
             >mdi-close-circle</v-icon>
@@ -61,8 +87,9 @@
         </div>
       </div>
       <div>
-        <div class="text-subtitle-1 required">Justificativa</div>
+        <div class="text-subtitle-1" :class="formData.status !== 'APROVADO' && !isSupervisor() ? 'required' : ''">Justificativa</div>
         <v-textarea
+          :disabled="formData.status === 'APROVADO' || isSupervisor()"
           v-model="formData.reason"
           placeholder="Descreva o motivo da solicitação"
           no-resize
@@ -70,22 +97,38 @@
           :rules="[Rule.required(), Rule.maxCharacters({ max: 200 })]"
         ></v-textarea>
       </div>
+      <div v-if="isSupervisor() || formData.status === 'REPROVADO'">
+        <div class="text-subtitle-1" :class="isSupervisor() ? 'required' : ''">Resposta da solicitação</div>
+        <v-textarea
+          :disabled="!isSupervisor()"
+          v-model="formData.feedback"
+          placeholder="Descreva uma resposta para a solicitação"
+          no-resize
+          counter
+          :rules="[Rule.required(), Rule.maxCharacters({ max: 500 })]"
+        ></v-textarea>
+      </div>
+      <v-container v-if="isSupervisor()" class="pt-0 my-0 d-flex justify-center" style="gap: 1rem">
+        <v-btn color="error" variant="outlined" prepend-icon="mdi-close" @click="() => $emit('rejected')">Reprovar</v-btn>
+        <v-btn color="success" prepend-icon="mdi-check" @click="() => $emit('approve')">Aprovar</v-btn>
+      </v-container>
     </v-container>
   </v-form>
   <Modal :modal="modal" v-if="openedModal" @close="closeModal" @confirm="confirmMaterial">
     <template #content>
-      <MaterialList @changeItemQuantity="changeItemQuantity"/>
+      <MaterialList ref="materialListRef"/>
     </template>
   </Modal>
 </template>
 <script lang="js">
 import { ref } from 'vue';
 import Rule from '@/util/Rule';
-import Login from '@/controllers/Login';
 import { format, add } from 'date-fns';
 import Modal from '@/components/Modal';
 import MaterialList from '@/components/MaterialList';
 import Token from '@/util/Token';
+import School from '@/controllers/School';
+import DateHandler from '@/util/DateHandler';
 
 export default {
   name: 'material-request',
@@ -97,17 +140,11 @@ export default {
   methods: {
     confirmMaterial() {
       this.openedModal = false;
-    },
-    changeItemQuantity({ item, quantity }) {
-      if (quantity === 0) {
-        delete this.formData.material[item.ID];
-      } else {
-        this.formData.material[item.ID] = {
-          ...item,
-          QUANTITY: quantity
-        };
-        console.log(this.formData.material);
-      }
+      const items = this.$refs.materialListRef.getItems();
+      this.formData.material = {};
+      items.forEach(item => {
+        this.formData.material[item.ID] = {...item};
+      })
     },
     addMaterial() {
       this.openedModal = true;
@@ -126,12 +163,16 @@ export default {
       const dayOfWeek = format(value, 'i').toString();
       return !['6', '7'].includes(dayOfWeek);
     },
-    async login() {
-      const isValid = await this.$refs.form.validate();
-      if (isValid) {
-        Login.auth(this.formData);
-      }
+    isSupervisor() {
+      return Token.getUserProfile() === 'SUPERVISOR';
     },
+    getValue() {
+      return {...this.formData};
+    },
+    async isValid() {
+      const { valid } = await this.$refs.form.validate();
+      return valid;
+    }
   },
   setup(props) {
     const visible = ref(false);
@@ -140,13 +181,30 @@ export default {
       username: Token.getUserName(),
       reason: null,
       utilizationDate: null,
+      feedback: null,
       material: {},
+      schools: [],
+      schoolId: null,
+      status: 'PENDENTE',
+      solicitationDate: DateHandler.formatDate(new Date(), { to: 'dd/MM/yyyy' }),
     };
+    const isNew = !(props.data && props.data.schoolId);
+
+    const loadingSchool = ref(false);
+    loadingSchool.value = true;
+    School.list().then(data => {
+      formData.value.schools = data;
+      if (isNew && data.length === 1) {
+        formData.value.schoolId = data[0].ID;
+      }
+    }).finally(() => loadingSchool.value = false);
     const formData = ref({ ...defaultValue, ...props.data });
     const modal = ref({
       title: 'Material',
     });
     return {
+      isNew,
+      loadingSchool,
       visible,
       rules: [
         Rule.required(),

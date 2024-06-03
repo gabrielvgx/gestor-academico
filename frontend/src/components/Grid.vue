@@ -23,7 +23,13 @@
     >
     <template v-slot:group-header="{ item, columns, toggleGroup, isGroupOpen }">
       <tr>
-        <td :colspan="columns.length" @click="() => onClickGroup(item)">
+        <td :colspan="columns.length" @click="(ev) => {
+          const el = ev.target;
+          if (el && (el.tagName === 'I' || el.classList.contains('v-icon') || el.classList.contains('v-btn') || el.classList.contains('v-btn__content'))) {
+            return;
+          }
+          onClickGroup(item)}
+        ">
           <v-btn
             v-if="showGroupActions"
             class="ms-2"

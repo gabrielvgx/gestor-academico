@@ -11,6 +11,24 @@ class StorageHandler {
   getNewPassToken() {
     return localStorage.getItem('new-pass-token');
   }
+  getFilter(screenName) {
+    try {
+      const filter = localStorage.getItem(`filter-${screenName}`);
+      if (filter) {
+        return JSON.parse(filter);
+      }
+    } catch(err) {
+      console.error(err.message);
+      return null;
+    }
+  }
+  setFilter(screenName, filter) {
+    try {
+      localStorage.setItem(`filter-${screenName}`, JSON.stringify(filter));
+    } catch(err) {
+      console.error(err.message);
+    }
+  }
 }
 
 export default new StorageHandler();

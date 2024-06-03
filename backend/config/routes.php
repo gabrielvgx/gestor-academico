@@ -24,7 +24,9 @@ return function (App $app) {
     $app->get('/material', [\App\Controller\Material::class, 'read']);
     $app->delete('/material', [\App\Controller\Material::class, 'delete']);
 
-    $app->get('/material-request', [\App\Controller\Material::class, 'readMaterialRequest']);
+    $app->get('/material-request', [\App\Controller\MaterialRequest::class, 'read']);
+    $app->post('/material-request', [\App\Controller\MaterialRequest::class, 'create']);
+    $app->put('/material-request', [\App\Controller\MaterialRequest::class, 'update']);
 
     $app->get('/notification', [\App\Controller\Notification::class, 'read']);
 

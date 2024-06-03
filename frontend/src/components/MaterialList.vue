@@ -2,7 +2,7 @@
   <VirtualList
     v-if="loaded"
     :config="config"
-    @changeItemQuantity="(params) => $emit('changeItemQuantity', params)"
+    ref="virtualListRef"
   />
 </template>
 <script lang="js">
@@ -14,7 +14,12 @@ export default {
   components: {
     VirtualList,
   },
-  emits: ['changeItemQuantity'],
+  // emits: ['changeItemQuantity'],
+  methods: {
+    getItems() {
+      return this.$refs.virtualListRef.getItems();
+    }
+  },
   setup() {
     const loaded = ref(false);
     const config = ref({

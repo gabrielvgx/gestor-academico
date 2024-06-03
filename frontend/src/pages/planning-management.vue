@@ -5,7 +5,7 @@
         <template v-slot:header>
           <v-container class="pa-0 ma-0 d-flex header-actions">
             <v-btn v-if="isTeacher()" prepend-icon="mdi-plus" color="primary" @click="gridAdd">Adicionar</v-btn>
-            <v-btn v-if="isTeacher()" prepend-icon="mdi-delete" color="error" variant="outlined" @click="gridRemove">Remover</v-btn>
+            <!-- <v-btn v-if="isTeacher()" prepend-icon="mdi-delete" color="error" variant="outlined" @click="gridRemove">Remover</v-btn> -->
             <v-btn prepend-icon="mdi-filter" color="primary" variant="outlined" @click="openFilter">Filtro</v-btn>
           </v-container>
         </template>

@@ -69,7 +69,7 @@ export default {
     getSelectedItems() {
       return this.data.filter(item => item.SELECTED);
     },
-    getIncludedItems() {
+    getItems() {
       return this.data.filter(item => !!item.QUANTITY);
     }
   },

@@ -37,9 +37,9 @@ class Material {
         $params = $request->getParsedBody();
         $result = MaterialProvider::read($params);
 
-        if (!$result) {
-          throw new \Exception('FAIL_GET_MATERIAL');
-        }
+        // if (!$result) {
+        //   throw new \Exception('FAIL_GET_MATERIAL');
+        // }
         list($materialTotalizer) = MaterialProvider::readCount();
         return ResponseHandler::success($response, [
           'data' => $result,
@@ -64,43 +64,4 @@ class Material {
       }
     }
 
-    public function readMaterialRequest(Request $request, Response $response) {
-      try {
-        $params = $request->getQueryParams();
-        $tokenData = $request->getAttribute('token')['data'];
-        $profile = $tokenData->PROFILE;
-        $userId = $profile === 'SUPERVISOR' ? null : $tokenData->ID;
-        $result = [];
-        if (isset($params['id'])) {
-          $tempResult = MaterialProvider::readMaterialRequestById([ $params['id'] ]);
-          list($firstRow) = $tempResult;
-          $result = [
-            'DSJUSTIFICATIVA' => $firstRow['DSJUSTIFICATIVA'],
-            'DTINCLUSAO' => $firstRow['DTINCLUSAO'],
-            'DTUTILIZACAO' => $firstRow['DTUTILIZACAO'],
-            'IDREQUISICAO' => $firstRow['IDREQUISICAO'],
-            'NMUSUARIO' => $firstRow['NMUSUARIO'],
-            'STATUS' => $firstRow['STATUS'],
-            'MATERIAL' => [],
-          ];
-          foreach($tempResult as $material) {
-            $result['MATERIAL'][] = [
-              'IDMATERIAL' => $material['IDMATERIAL'],
-              'NMMATERIAL' => $material['NMMATERIAL'],
-              'QTMATERIAL' => $material['QTMATERIAL'],
-            ];
-          }
-        } else {
-          $result = MaterialProvider::readMaterialRequest([
-            $params['school'],
-            $userId,
-          ]);
-        }
-        return ResponseHandler::success($response, [
-          'data' => $result,
-        ]);
-      } catch(\Exception $error){
-        return ResponseHandler::error($response, $error);
-      }
-    }
 }

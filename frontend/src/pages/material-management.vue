@@ -5,7 +5,7 @@
         <template v-slot:header>
           <v-container class="pa-0 ma-0 d-flex header-actions flex-wrap">
             <v-btn v-if="isTeacher()" prepend-icon="mdi-plus" color="primary" @click="gridAdd">Adicionar</v-btn>
-            <v-btn v-if="isTeacher()" prepend-icon="mdi-delete" color="error" variant="outlined" @click="gridRemove">Remover</v-btn>
+            <!-- <v-btn v-if="isTeacher()" prepend-icon="mdi-delete" color="error" variant="outlined" @click="gridRemove">Remover</v-btn> -->
             <v-btn prepend-icon="mdi-filter" color="primary" variant="outlined" @click="openFilter">Filtro</v-btn>
           </v-container>
         </template>
@@ -22,12 +22,12 @@
       </Modal>
       <Modal
         v-if="openedRequestForm"
-        :modal="{ title: 'Solicitação de Material', name: 'material-request-form'}"
+        :modal="{ title: 'Solicitação de Material', name: 'material-request-form', hideFooter: !isTeacher()}"
         @close="closeRequestForm"
         @confirm="confirmRequestForm"
       >
       <template #content>
-        <MaterialRequestForm ref="materialRequestForm" :data="requestFormData" />
+        <MaterialRequestForm ref="materialRequestForm" :data="requestFormData" @approve="approve" @rejected="rejected"/>
       </template>
       </Modal>
     </template>
@@ -43,9 +43,9 @@ import MaterialRequestForm from './material-request-form.vue';
 import Panel from '@/components/Panel';
 import { ref } from 'vue';
 import Alert from '@/util/Alert';
-import Planning from '@/controllers/Planning';
 import PlanningForm from '@/pages/planning-form';
 import Token from '@/util/Token';
+import StorageHandler from '@/util/StorageHandler';
 
 export default {
   components: {
@@ -63,11 +63,43 @@ export default {
     openFilter() {
       this.openedFilter = true;
     },
+    async approve() {
+      const isValid = await this.$refs.materialRequestForm.isValid();
+      if (isValid) {
+        const formValue = this.$refs.materialRequestForm.getValue();
+        const success = await MaterialRequest.changeStatus(formValue.data.IDREQUISICAO, 'APROVADO', formValue.feedback);
+        if (success) {
+          this.refreshGrid();
+          this.closeRequestForm();
+        }
+      }
+    },
+    async rejected() {
+      const isValid = await this.$refs.materialRequestForm.isValid();
+      if (isValid) {
+        const formValue = this.$refs.materialRequestForm.getValue();
+        const success = await MaterialRequest.changeStatus(formValue.data.IDREQUISICAO, 'REPROVADO', formValue.feedback);
+        if (success) {
+          this.refreshGrid();
+          this.closeRequestForm();
+        }
+      }
+    },
     closeRequestForm() {
       this.openedRequestForm = false;
+      this.requestFormData = {};
     },
-    confirmRequestForm() {
-
+    async confirmRequestForm() {
+      const isValid = await this.$refs.materialRequestForm.isValid();
+      if (isValid) {
+        const formValue = this.$refs.materialRequestForm.getValue();
+        const success = await MaterialRequest.save(formValue);
+        if (success) {
+          this.$refs.gridRef.reload();
+          this.openedRequestForm = false;
+          this.requestFormData = {};
+        }
+      }
     },
     closeFilter() {
       this.openedFilter = false;
@@ -98,20 +130,26 @@ export default {
     const openedRequestForm = ref(false);
     const openedFilter = ref(true);
     const formData = ref({});
-    const showGrid = ref(false);
     const grid = ref(null);
     const data = ref([]);
     const requestFormData = ref({});
     const filterRef = ref(null);
     const gridRef = ref(null);
     const applyFilter = async () => {
-      if (!filterRef.value) return;
+      if (!filterRef.value) {
+        const savedFilter = StorageHandler.getFilter('material-management');
+        if (savedFilter) {
+          data.value = await MaterialRequest.applyFilter(savedFilter);
+          openedFilter.value = false;
+        }
+        return;
+      }
       const isValid = await filterRef.value.isValid();
       if (isValid) {
         const filter = filterRef.value.getValue();
+        StorageHandler.setFilter('material-management', filter);
         data.value = await MaterialRequest.applyFilter(filter);
         openedFilter.value = false;
-        showGrid.value = true;
       }
     };
     return {
@@ -123,7 +161,6 @@ export default {
       gridRef,
       formData,
       grid,
-      showGrid,
       data,
       applyFilter,
       gridConfig: {
@@ -135,11 +172,18 @@ export default {
           { key: 'IDREQUISICAO', order: 'asc' },
         ],
         async onClickGroup({ value }) {
-          requestFormData.value = await MaterialRequest.getRequestDetail(value);
-          if (requestFormData.value) {
+          const result = await MaterialRequest.getRequestDetail(value);
+          if (result) {
+            requestFormData.value = result;
             openedRequestForm.value = true;
           }
         },
+      //   username: Token.getUserName(),
+      // reason: null,
+      // utilizationDate: null,
+      // material: {},
+      // schools: [],
+      // schoolId: null,
         // async onClickRow(_, params) {
         //   const result = await Planning.getDetail(params);
         //   if (result) {
