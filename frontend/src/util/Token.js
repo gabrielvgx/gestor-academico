@@ -21,6 +21,9 @@ class Token {
   getUserId() {
     return this.getTokenData()?.ID;
   }
+  getUserName() {
+    return this.getTokenData()?.NAME;
+  }
 }
 
 export default new Token();

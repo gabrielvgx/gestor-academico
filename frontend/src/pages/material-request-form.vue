@@ -1,9 +1,9 @@
 <template>
-  <v-form class="user-form generic-form" ref="form">
-    <v-row class="form-title">
+  <v-form ref="form" style="margin-bottom: 100px;">
+    <!-- <v-row class="form-title">
       <h3>Solicitação de Material</h3>
-    </v-row>
-    <div class="form-body">
+    </v-row> -->
+    <v-container class="pa-0 ma-0 d-flex flex-column">
       <div>
         <div class="text-subtitle-1">Solicitante</div>
         <v-text-field
@@ -20,6 +20,7 @@
         <div class="text-subtitle-1 required">Previsão de Utilização</div>
         <v-locale-provider locale="BR">
           <v-date-picker
+            class="mx-auto"
             :rules="rules"
             hide-header
             v-model="formData.utilizationDate"
@@ -69,8 +70,7 @@
           :rules="[Rule.required(), Rule.maxCharacters({ max: 200 })]"
         ></v-textarea>
       </div>
-    </div>
-    <v-btn color="primary">Confirmar</v-btn>
+    </v-container>
   </v-form>
   <Modal :modal="modal" v-if="openedModal" @close="closeModal" @confirm="confirmMaterial">
     <template #content>
@@ -85,6 +85,7 @@ import Login from '@/controllers/Login';
 import { format, add } from 'date-fns';
 import Modal from '@/components/Modal';
 import MaterialList from '@/components/MaterialList';
+import Token from '@/util/Token';
 
 export default {
   name: 'material-request',
@@ -92,6 +93,7 @@ export default {
     Modal,
     MaterialList,
   },
+  props: ['data'],
   methods: {
     confirmMaterial() {
       this.openedModal = false;
@@ -104,6 +106,7 @@ export default {
           ...item,
           QUANTITY: quantity
         };
+        console.log(this.formData.material);
       }
     },
     addMaterial() {
@@ -130,15 +133,16 @@ export default {
       }
     },
   },
-  setup() {
+  setup(props) {
     const visible = ref(false);
     const openedModal = ref(false);
-    const formData = ref({
-      username: localStorage.getItem('USER'),
+    const defaultValue = {
+      username: Token.getUserName(),
       reason: null,
       utilizationDate: null,
       material: {},
-    });
+    };
+    const formData = ref({ ...defaultValue, ...props.data });
     const modal = ref({
       title: 'Material',
     });

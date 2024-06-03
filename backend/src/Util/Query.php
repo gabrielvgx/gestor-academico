@@ -31,8 +31,8 @@ SQL,
           SELECT DATE_SUB(DATE_ADD(data, INTERVAL 7 DAY), INTERVAL WEEKDAY(DATE_ADD(data, INTERVAL 7 DAY)) DAY)
           FROM dates
           WHERE data <= '2024-05-31'
-)
-        SELECT 
+        )
+        SELECT
           DATE_FORMAT(data, '%d/%m/%Y') AS DTINICIAL,
           P.ID,
           E.ID AS IDESCOLA,
@@ -68,7 +68,16 @@ SQL,
           ON P.IDUSERINCLUSAO = U.ID
 SQL,
       'READ_MATERIAL' => "SELECT ID, NMMATERIAL, DSMATERIAL FROM MATERIAL",
-      'READ_SCHOOL' => "SELECT ID, NMESCOLA FROM ESCOLA",
+      'READ_SCHOOL' => <<<SQL
+        SELECT
+          E.ID,
+          E.NMESCOLA
+        FROM ESCOLA E
+        INNER JOIN USUARIOINSTITUICAO UI
+            ON E.ID = UI.IDESCOLA
+        WHERE UI.IDUSUARIO = ?
+        GROUP BY E.ID, E.NMESCOLA
+SQL,
       'READ_SCHOOL_AND_CLASS' => <<<SQL
         SELECT
           E.ID,
@@ -140,7 +149,7 @@ SQL,
 SQL,
       'DETAIL_PLANNING' => <<<SQL
         SELECT
-          PL.DTPLANO,
+          DATE_FORMAT(PL.DTPLANO, '%d/%m/%Y') AS DTPLANO,
           PL.STATUS,
           PL.DSATIVIDADE,
           PL.DSRETORNO,
@@ -149,50 +158,103 @@ SQL,
           E.NMESCOLA,
           T.ID AS IDTURMA,
           T.NMTURMA,
-          BNCC.CODBNCC,
-          BNCC.NMCAMPOEXP
+          U.NMUSUARIO,
+          PL.IDBNCC,
+          TURNO.ID AS IDTURNO,
+          TURNO.NMTURNO,
+          GROUP_CONCAT(BNCC.CODBNCC SEPARATOR ';') AS CODBNCC
         FROM
           PLANEJAMENTO PL
           INNER JOIN ESCOLA E
             ON PL.IDESCOLA = E.ID
           INNER JOIN TURMA T
             ON PL.IDTURMA = T.ID
+          INNER JOIN USUARIO U
+            ON PL.IDUSERINCLUSAO = U.ID
           INNER JOIN BNCC
-            ON INSTR(PL.IDBNCC, CONCAT('|', PL.IDBNCC, '|')) <> 0
-        WHERE PL.ID = ?
+            ON INSTR(PL.IDBNCC, CONCAT(';', BNCC.ID, ';')) <> 0
+          INNER JOIN TURNO
+            ON PL.IDTURNO = TURNO.ID
+        WHERE
+          PL.IDESCOLA = ?
+          AND PL.IDTURMA = ?
+          AND (PL.DTPLANO BETWEEN ? AND ?)
+        GROUP BY
+          PL.ID
+        ORDER BY
+          PL.DTPLANO
 SQL,
       'GET_PLANNING' => <<<SQL
-        SELECT
-          P.*,
-          T.NMTURMA,
-          WEEK(P.DTPLANO) AS SEMANA,
-          DATE_FORMAT(DTPLANO, '%d/%m/%Y') AS DTINICIAL,
-          DATE_FORMAT(DATE_ADD(DTPLANO, INTERVAL 4 DAY), '%d/%m/%Y') AS DTFINAL,
-          CONCAT_WS(' - ', DATE_FORMAT(DTPLANO, '%d/%m/%Y'), DATE_FORMAT(DATE_ADD(DTPLANO, INTERVAL 4 DAY), '%d/%m/%Y')) AS PERIODO
-        FROM
-          PLANEJAMENTO P
-          INNER JOIN TURMA T
-          ON P.IDTURMA = T.ID
-        WHERE
-          P.IDESCOLA = ?
-          AND P.STATUS = ?
-          AND MONTH(P.DTPLANO) = ?
-          AND YEAR(P.DTPLANO) = ?
-          AND WEEKDAY(P.DTPLANO) = 0
-        ORDER BY
-        P.DTPLANO DESC
+        SELECT DISTINCT * FROM (
+          SELECT
+            P.IDESCOLA,
+            P.IDTURMA,
+            T.NMTURMA,
+            P.STATUS,
+            DATE_FORMAT(DTPLANO, '%d/%m/%Y') AS DTINICIAL,
+            DATE_FORMAT(DATE_ADD(DTPLANO, INTERVAL 4 DAY), '%d/%m/%Y') AS DTFINAL,
+            CONCAT_WS(' - ', DATE_FORMAT(DTPLANO, '%d/%m/%Y'), DATE_FORMAT(DATE_ADD(DTPLANO, INTERVAL 4 DAY), '%d/%m/%Y')) AS PERIODO,
+            U.NMUSUARIO
+          FROM
+            PLANEJAMENTO P
+            INNER JOIN USUARIO U
+              ON P.IDUSERINCLUSAO = U.ID
+            INNER JOIN TURMA T
+            ON P.IDTURMA = T.ID
+          WHERE
+            P.IDESCOLA = ?
+            AND MONTH(P.DTPLANO) = ?
+            AND YEAR(P.DTPLANO) = ?
+            AND WEEKDAY(P.DTPLANO) = 0
+          ORDER BY
+            P.IDTURMA ASC,
+            P.DTPLANO ASC
+        ) A
+SQL,
+      'GET_PLANNING_BY_USER' => <<<SQL
+        SELECT DISTINCT * FROM (
+          SELECT
+            P.STATUS,
+            DATE_FORMAT(P.DTPLANO, '%d/%m/%Y') AS DTINICIAL,
+            DATE_FORMAT(DATE_ADD(P.DTPLANO, INTERVAL 4 DAY), '%d/%m/%Y') AS DTFINAL,
+            CONCAT_WS(' - ', DATE_FORMAT(P.DTPLANO, '%d/%m/%Y'), DATE_FORMAT(DATE_ADD(P.DTPLANO, INTERVAL 4 DAY), '%d/%m/%Y')) AS PERIODO,
+            E.ID AS IDESCOLA,
+            E.NMESCOLA,
+            T.ID AS IDTURMA,
+            T.NMTURMA,
+            P.DSRETORNO,
+            P.IDBNCC
+          FROM
+            PLANEJAMENTO P
+            INNER JOIN ESCOLA E
+              ON P.IDESCOLA = E.ID
+            INNER JOIN TURMA T
+              ON P.IDESCOLA = T.IDESCOLA
+              AND P.IDTURMA = T.ID
+            WHERE
+              P.IDESCOLA = ?
+              AND MONTH(P.DTPLANO) = ?
+              AND YEAR(P.DTPLANO) = ?
+              AND P.IDUSERINCLUSAO = ?
+              AND WEEKDAY(P.DTPLANO) = 0
+            ORDER BY
+              P.IDTURMA ASC,
+              P.DTPLANO ASC
+        ) A
 SQL,
       'DELETE_MATERIAL' => <<<SQL
-      DELETE FROM MATERIAL
-      WHERE ID = ?
+        DELETE FROM MATERIAL
+        WHERE ID = ?
 SQL,
       'READ_MATERIAL_COUNT' => 'SELECT COUNT(*) AS NRMATERIAL FROM MATERIAL',
       'CREATE_MATERIAL' => 'INSERT INTO MATERIAL (NMMATERIAL, DSMATERIAL, IDUSERINCLUSAO) VALUES (?, ?, ?)',
       'READ_MATERIAL_REQUEST' => <<<SQL
         SELECT
           RM.ID,
+          RM.IDREQUISICAO,
           RM.QTMATERIAL,
           RM.DSJUSTIFICATIVA,
+          RM.STATUS,
           DATE_FORMAT(RM.DTUTILIZACAO, '%d/%m/%Y') AS DTUTILIZACAO,
           DATE_FORMAT(RM.DTINCLUSAO, '%d/%m/%Y') AS DTINCLUSAO,
           U.NMUSUARIO,
@@ -205,8 +267,28 @@ SQL,
             ON U.ID = RM.IDUSERINCLUSAO
         WHERE
           RM.IDESCOLA = ?
-          AND RM.STATUS = ?
           AND RM.IDUSERINCLUSAO = COALESCE(?, RM.IDUSERINCLUSAO)
+SQL,
+      'READ_MATERIAL_REQUEST_BY_ID' => <<<SQL
+        SELECT
+          RM.ID,
+          RM.IDREQUISICAO,
+          RM.QTMATERIAL,
+          RM.DSJUSTIFICATIVA,
+          RM.STATUS,
+          DATE_FORMAT(RM.DTUTILIZACAO, '%d/%m/%Y') AS DTUTILIZACAO,
+          DATE_FORMAT(RM.DTINCLUSAO, '%d/%m/%Y') AS DTINCLUSAO,
+          U.NMUSUARIO,
+          M.ID AS IDMATERIAL,
+          M.NMMATERIAL
+        FROM
+          REQUISICAOMATERIAL RM
+          INNER JOIN MATERIAL M
+            ON RM.IDMATERIAL = M.ID
+          INNER JOIN USUARIO U
+            ON U.ID = RM.IDUSERINCLUSAO
+        WHERE
+          RM.IDREQUISICAO = ?
 SQL,
       'READ_MATERIAL_REQUEST_COUNT' => <<<SQL
         SELECT
@@ -222,6 +304,35 @@ SQL,
             RM.STATUS = 'PENDENTE'
             AND UI.IDUSUARIO = ?
         ) A
+SQL,
+      'READ_PERIOD' => "SELECT ID, NMTURNO FROM TURNO",
+      'READ_EDUCATION_TARGET' => <<<SQL
+        SELECT
+          BNCC.ID,
+          BNCC.CODBNCC,
+          CE.NMCAMPOEXP,
+          FE.DSFAIXAETARIA,
+          BNCC.DSOBJETIVO
+        FROM BNCC
+        INNER JOIN CAMPOEXPBNCC CE
+          ON BNCC.IDCAMPOEXPBNCC = CE.ID
+        INNER JOIN FAIXAETARIABNCC FE
+          ON BNCC.IDFAIXAETARIABNCC = FE.ID
+SQL,
+      'CREATE_PLANNING' => <<<SQL
+        INSERT INTO PLANEJAMENTO
+        (STATUS, DTPLANO, IDESCOLA, IDTURMA, IDTURNO, DSATIVIDADE, IDBNCC, IDUSERINCLUSAO)
+        VALUES
+        (?, ?, ?, ?, ?, ?, ?, ?)
+SQL,
+      'EXISTS_PLANNING' => <<<SQL
+        SELECT
+          ID
+        FROM
+          PLANEJAMENTO
+        WHERE IDESCOLA = ?
+        AND IDTURMA = ?
+        AND DTPLANO = ?
 SQL,
     ],
   ];

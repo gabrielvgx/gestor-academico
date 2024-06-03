@@ -1,6 +1,6 @@
 <template>
   <v-container class="pa-0 my-3 d-flex flex-wrap justify-center align-items-center" style="gap: 1rem">
-    <v-card class='card ma-0' v-for='card in cards' :key='card.name' :color='card.color'>
+    <v-card class='card ma-0' v-for='card in cards' :key='card.name' :color='card.color' :class="card.isVisible !== false ? 'd-flex' : 'd-none'">
       <v-row class="ma-0 pa-0 h-100" @click="() => $emit('onClick', card)">
         <v-col cols='2' md='2' sm='12' class='d-flex align-center justify-center card-icon'>
           <v-icon :icon='card.icon'></v-icon>

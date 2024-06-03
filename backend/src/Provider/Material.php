@@ -30,4 +30,8 @@ class Material {
   static function readMaterialRequestCount($params) {
     return (new DB())->fetch(Query::get('READ_MATERIAL_REQUEST_COUNT'), $params);
   }
+
+  static function readMaterialRequestById($params) {
+    return (new DB())->fetch(Query::get('READ_MATERIAL_REQUEST_BY_ID'), $params);
+  }
 }

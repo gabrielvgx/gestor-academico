@@ -23,7 +23,7 @@
     >
     <template v-slot:group-header="{ item, columns, toggleGroup, isGroupOpen }">
       <tr>
-        <td :colspan="columns.length">
+        <td :colspan="columns.length" @click="() => onClickGroup(item)">
           <v-btn
             v-if="showGroupActions"
             class="ms-2"
@@ -42,6 +42,7 @@
             variant="text"
             @click="() => toggleGroup(item)"
           />
+          <v-chip :color="getColorByStatus(item.items[0].value.STATUS)" v-if="showGroupStatus">{{ item.items[0].value.STATUS }}</v-chip>
           {{ item.items[0].value[groupDescription] }}
           <v-btn
             v-if="showGroupActions"
@@ -74,6 +75,13 @@ export default {
     });
   },
   methods: {
+    getColorByStatus(status) {
+      switch(status) {
+        case 'APROVADO': return 'success';
+        case 'REPROVADO': return 'error';
+        default: return 'black';
+      }
+    },
     async reload() {
       try {
         this.loading = true;
@@ -106,7 +114,9 @@ export default {
     const groupDescription = props.config.groupDescription || '';
     const hasChildren = props.config.hasChildren || (() => true);
     const onClickRow = props.config.onClickRow || (() => {});
+    const onClickGroup = props.config.onClickGroup || (() => {});
     const showGroupActions = props.config.showGroupActions || false;
+    const showGroupStatus = props.config.showGroupStatus || false;
     const showSelect = ('showSelect' in props.config) ? props.config.showSelect : true;
     return {
       search,
@@ -122,8 +132,10 @@ export default {
       groupBy,
       groupDescription,
       hasChildren,
+      onClickGroup,
       onClickRow,
       showGroupActions,
+      showGroupStatus,
       showSelect,
     }
   }

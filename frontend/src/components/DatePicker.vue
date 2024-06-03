@@ -1,12 +1,13 @@
 <template>
-  <div class="text-subtitle-1 required">{{ label }}</div>
+  <div class="text-subtitle-1" :class="!disabledField && 'required'">{{ label }}</div>
   <v-locale-provider locale="BR">
-    <v-menu v-model="isMenuOpen" close-on-content-click>
+    <v-menu v-model="isMenuOpen" :close-on-content-click="false">
       <template v-slot:activator="{ props }">
         <v-text-field
           :model-value="formattedDate"
           readonly
           density="compact"
+          :disabled="disabledField"
           variant="outlined"
           :hint="planningDate.length && isThisWeek(planningDate[0]) ? 'Semana Atual' : ''"
           persistent-hint
@@ -22,7 +23,7 @@
         hide-header
         multiple
         show-adjacent-months
-        :min="getFormattedNow()"
+        :min="getMinDate()"
         :max="getMaxDate()"
         :allowed-dates="allowedDates"
         @update:modelValue="onChangeDate"
@@ -38,6 +39,7 @@ import {
   format,
   add,
   previousMonday,
+  nextMonday,
   isMonday,
   isFriday,
   isWeekend,
@@ -46,7 +48,8 @@ import {
 import Rule from '@/util/Rule';
 
 export default {
-  props: ['options'],
+  props: ['options', 'disabled'],
+  emits: ['change'],
   computed: {
     formattedDate() {
       if (this.planningDate.length === 0) {
@@ -64,8 +67,13 @@ export default {
       const maxDate = add(new Date(), { months: 3 });
       return format(maxDate, 'yyyy-MM-dd');
     },
+    getMinDate() {
+      console.log(format(nextMonday(new Date()), 'yyyy-MM-dd'));
+      return format(nextMonday(new Date()), 'yyyy-MM-dd');
+    },
     clearSelectedDates() {
       this.planningDate = [];
+      this.$emit('change', { dates: []});
     },
     getFormattedNow() {
       return format(new Date(), 'yyyy-MM-dd');
@@ -89,13 +97,16 @@ export default {
         selectedDates.push(curDate);
       }
       this.planningDate = selectedDates;
+      this.$emit('change', { dates: selectedDates });
+      this.isMenuOpen = false;
     },
   },
   setup(props) {
     const label = ref(props.options.label);
     const isMenuOpen = ref(false);
-    const planningDate = ref([]);
+    const planningDate = ref(props.options.value || []);
     const rules = [Rule.required()];
+    const disabled = props.disabled || false;
 
     return {
       label,
@@ -103,6 +114,7 @@ export default {
       planningDate,
       isThisWeek,
       rules,
+      disabledField: disabled,
     };
   }
 }

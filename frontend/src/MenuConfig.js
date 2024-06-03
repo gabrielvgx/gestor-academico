@@ -11,7 +11,7 @@ const config = [
     name: 'week-planning',
     label: 'Planejamento Semanal',
     icon: 'mdi-book-alphabet',
-    href: '/week-planning',
+    href: '/planning-management',
     permissions: ['TEACHER'],
   },
   {
@@ -27,7 +27,7 @@ const config = [
     label: 'Materiais Solicitados',
     icon: 'mdi-clipboard-list-outline',
     selectedMenuIcon: 'mdi-clipboard-list',
-    href: '/material-request',
+    href: '/material-management',
     permissions: ['SUPERVISOR'],
   },
   {
@@ -57,7 +57,7 @@ const config = [
     name: 'material-request',
     label: 'Solicitar material',
     icon: 'mdi-toy-brick-plus',
-    href: '/material-request',
+    href: '/material-management',
     permissions: ['TEACHER'],
   },
   {

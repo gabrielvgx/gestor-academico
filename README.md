@@ -104,3 +104,10 @@ TEACHER -> Materiais aprovados / rejeitados
     https://echarts.apache.org/examples/en/editor.html?c=pie-simple
 - Análise por usuário (histórico de entregas)
 - Análise por usuário (histórico de solicitação de materiais)
+
+Images:
+https://www.freepik.com/free-photo/school-supplies-top-view-background-chalkboard-free-space_9416293.htm#fromView=search&page=6&position=30&uuid=023f39b0-1fab-48db-9771-8bda201118bc
+
+https://www.freepik.com/free-ai-image/school-supply-green-chalkboard-copy-space-background_126532741.htm#fromView=search&page=2&position=48&uuid=023f39b0-1fab-48db-9771-8bda201118bc
+
+https://www.freepik.com/free-photo/healthy-school-lunch-box-with-beef-sandwich-fresh-vegetables-bottle-water-fruits-blue-table-top-view-flat-lay_7380127.htm#fromView=search&page=1&position=14&uuid=90473e97-0ddd-4907-b137-42bed49bffdd

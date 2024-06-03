@@ -56,6 +56,7 @@ export default {
           title: 'Req. de Materiais Pendentes',
           content: '1',
           icon: 'mdi-clipboard-clock-outline',
+          isVisible: Token.getUserProfile() === 'SUPERVISOR',
           color: 'green',
         },
         {
@@ -63,6 +64,7 @@ export default {
           title: 'Planejamentos Pendentes',
           content: '12',
           icon: 'mdi-book-clock-outline',
+          isVisible: Token.getUserProfile() === 'SUPERVISOR',
           color: 'warning',
           footer: '',
         },
@@ -72,6 +74,7 @@ export default {
           content: '12',
           icon: 'mdi-book-cancel-outline',
           color: 'error',
+          isVisible: Token.getUserProfile() === 'TEACHER',
           footer: '',
         },
         {
@@ -80,6 +83,7 @@ export default {
           content: '12',
           icon: 'mdi-clipboard-remove-outline',
           color: 'error',
+          isVisible: Token.getUserProfile() === 'TEACHER',
           footer: '',
         },
       ],

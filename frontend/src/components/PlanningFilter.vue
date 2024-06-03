@@ -33,7 +33,7 @@
         />
       </v-col> -->
       <v-col class="py-0" cols="12">
-        <DatePickerMonth :options="{label: 'Mês do Planejamento'}" @change="onChangeMonth" />
+        <DatePickerMonth :options="{label: dateLabel || 'Mês do Planejamento'}" @change="onChangeMonth" />
       </v-col>
     </v-row>
   </v-form>
@@ -46,13 +46,14 @@ import School from '@/controllers/School';
 import Rule from '@/util/Rule';
 
 export default {
+  props: ['config'],
   components: {
     DatePickerMonth,
   },
   methods: {
     onChangeMonth({ month, year }) {
-      this.formData.planningMonth = month;
-      this.formData.planningYear = year;
+      this.formData.month = month;
+      this.formData.year = year;
     },
     async isValid() {
       const { valid } = await this.$refs.form.validate();
@@ -62,12 +63,12 @@ export default {
       return { ... this.formData };
     }
   },
-  setup() {
+  setup(props) {
     const formData = ref({
       school: null,
       // classId: null,
-      planningMonth: new Date().getMonth(),
-      planningYear: new Date().getFullYear(),
+      month: new Date().getMonth(),
+      year: new Date().getFullYear(),
     });
     const schools = ref([]);
     // const allClass = ref([]);
@@ -97,6 +98,7 @@ export default {
       // loadingClass,
       // allClass,
       rules,
+      dateLabel: props.config.dateLabel,
       // changeSchool,
     }
   }

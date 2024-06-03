@@ -146,9 +146,9 @@ import Notification from '@/controllers/Notification';
       const preview = ref(false);
       const loader = ref(true);
       const interval = ref(setInterval(async() => {
-        notifications.value = await Notification.load();
+        // notifications.value = await Notification.load();
         loader.value = false;
-      }, 10*1000));
+      }, 20*1000));
 
       onUnmounted(() => {
         clearInterval(interval.value);

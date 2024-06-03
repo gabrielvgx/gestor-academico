@@ -1,6 +1,6 @@
 <template>
   <NotificationList />
-  <v-app>
+  <v-app style="overflow-y: auto; overflow-x: hidden; max-height: calc(100vh - var(--footer-size))">
     <notifications :duration='2000' style='padding-top: 1rem' />
     <v-dialog
       v-model="dialog"
@@ -113,7 +113,7 @@ export default {
 <style lang="scss" scoped>
 .v-footer {
   height: 30px;
-  position: absolute;
+  position: fixed;
   bottom: 0;
   width: 100vw;
   font-size: small;

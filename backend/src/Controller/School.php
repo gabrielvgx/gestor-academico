@@ -10,12 +10,13 @@ class School {
 
     public function read(Request $request, Response $response) {
       try {
-        $params = $request->getParsedBody();
-        $result = SchoolProvider::read($params);
+        // $params = $request->getParsedBody();
+        $userId = $request->getAttribute('token')['data']->ID;
+        $result = SchoolProvider::read([$userId]);
 
-        if (!$result) {
-          throw new \Exception('FAIL_GET_SCHOOL');
-        }
+        // if (!$result) {
+        //   throw new \Exception('FAIL_GET_SCHOOL');
+        // }
 
         return ResponseHandler::success($response, [
           'data' => $result,

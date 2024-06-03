@@ -18,7 +18,7 @@ router.beforeEach((to, from, next) => {
   const isAuthenticated = localStorage.getItem('token');
   const publicRoutes = App.getPublicRoutes();
   if (!isAuthenticated && !publicRoutes.includes(to.path)) {
-    next('/login');
+    next('/');
   } else {
     next();
   }

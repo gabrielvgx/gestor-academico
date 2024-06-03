@@ -3,7 +3,7 @@ class App {
     return window.document.body.clientWidth < 500;
   }
   getPublicRoutes() {
-    return ['/login', '/otp', '/forgot-password', '/new-password'];
+    return ['/', '/login', '/otp', '/forgot-password', '/new-password'];
   }
 }
 

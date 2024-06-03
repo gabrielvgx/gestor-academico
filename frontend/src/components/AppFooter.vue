@@ -1,6 +1,6 @@
 <template>
   <v-footer color="primary">
-    <span>Gestor Acadêmico</span>
+    <span>@ 2024 Gestor Acadêmico</span>
     <span>v1.0.0</span>
   </v-footer>
 </template>

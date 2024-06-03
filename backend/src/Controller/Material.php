@@ -70,11 +70,32 @@ class Material {
         $tokenData = $request->getAttribute('token')['data'];
         $profile = $tokenData->PROFILE;
         $userId = $profile === 'SUPERVISOR' ? null : $tokenData->ID;
-        $result = MaterialProvider::readMaterialRequest([
-          $params['school'] ?? 1,
-          $params['status'] ?? 'PENDENTE',
-          $userId,
-        ]);
+        $result = [];
+        if (isset($params['id'])) {
+          $tempResult = MaterialProvider::readMaterialRequestById([ $params['id'] ]);
+          list($firstRow) = $tempResult;
+          $result = [
+            'DSJUSTIFICATIVA' => $firstRow['DSJUSTIFICATIVA'],
+            'DTINCLUSAO' => $firstRow['DTINCLUSAO'],
+            'DTUTILIZACAO' => $firstRow['DTUTILIZACAO'],
+            'IDREQUISICAO' => $firstRow['IDREQUISICAO'],
+            'NMUSUARIO' => $firstRow['NMUSUARIO'],
+            'STATUS' => $firstRow['STATUS'],
+            'MATERIAL' => [],
+          ];
+          foreach($tempResult as $material) {
+            $result['MATERIAL'][] = [
+              'IDMATERIAL' => $material['IDMATERIAL'],
+              'NMMATERIAL' => $material['NMMATERIAL'],
+              'QTMATERIAL' => $material['QTMATERIAL'],
+            ];
+          }
+        } else {
+          $result = MaterialProvider::readMaterialRequest([
+            $params['school'],
+            $userId,
+          ]);
+        }
         return ResponseHandler::success($response, [
           'data' => $result,
         ]);

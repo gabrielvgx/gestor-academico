@@ -28,5 +28,11 @@ return function (App $app) {
 
     $app->get('/notification', [\App\Controller\Notification::class, 'read']);
 
+    $app->post('/planning', [\App\Controller\Planning::class, 'create']);
     $app->get('/planning', [\App\Controller\Planning::class, 'read']);
+    $app->get('/planning-detail', [\App\Controller\Planning::class, 'readDetail']);
+
+    $app->get('/period', [\App\Controller\Period::class, 'read']);
+
+    $app->get('/education-target', [\App\Controller\EducationTarget::class, 'read']);
 };
