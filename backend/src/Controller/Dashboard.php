@@ -38,4 +38,17 @@ class Dashboard {
         return ResponseHandler::error($response, $err);
       }
     }
+
+    public function getFoodData(Request $request, Response $response) {
+      try {
+        $params = $request->getQueryParams();
+        $schoolId = $params['schoolId'];
+        $data = DashboardProvider::getDsbFood([$schoolId]);
+        return ResponseHandler::success($response, [
+          'food' => $data,
+        ]);
+      } catch (\Exception $err) {
+        return ResponseHandler::error($response, $err);
+      }
+    }
 }

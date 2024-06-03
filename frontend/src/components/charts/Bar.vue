@@ -43,13 +43,33 @@ export default {
   setup(props) {
     const {
       titleText,
+      subTitleText,
       tooltip,
       chartName,
+      series,
+      labels,
       // legendData,
       // data,
       // legendDataX,
       // color = ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'],
     } = props.options;
+    console.log(props.options);
+    const defaultSerieProps = {
+      type: 'bar',
+      data: [],
+      markPoint: {
+        data: [
+          { type: 'max', name: 'Max' },
+          { type: 'min', name: 'Min' }
+        ]
+      },
+      markLine: {
+        data: [{ type: 'average', name: 'Avg' }]
+      }
+    };
+    const seriesHandled = series.map(serie => {
+      return {...defaultSerieProps, ...serie};
+    })
     const handleResize = () => {
       const el = document.getElementById(chartName);
       const graphEl = el && el.children ? el.children[0] : null
@@ -65,13 +85,14 @@ export default {
     const option = ref({
       title: {
         text: titleText || 'Análise de Desperdício Alimentar (KG)',
+        subtext: subTitleText || 'Últimos 6 meses'
       },
       tooltip: tooltip || {
         trigger: 'axis',
       },
       legend: {
         top: 70,
-        data: ['Sobra limpa', 'Sobra suja']
+        data: seriesHandled.map(serie => serie.name)
       },
       toolbox: {
         top: 30,
@@ -90,7 +111,7 @@ export default {
       xAxis: [
         {
           type: 'category',
-          data: ['Jan', 'Fev', 'Mar', 'Abr', 'Maio', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
+          data: labels || ['Jan', 'Fev', 'Mar', 'Abr', 'Maio', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
         }
       ],
       yAxis: [
@@ -98,7 +119,7 @@ export default {
           type: 'value'
         }
       ],
-      series: [
+      series: seriesHandled || [
         {
           name: 'Sobra limpa',
           type: 'bar',
@@ -123,8 +144,8 @@ export default {
           ],
           markPoint: {
             data: [
-              { name: 'Max', value: 182.2, xAxis: 7, yAxis: 183 },
-              { name: 'Min', value: 2.3, xAxis: 11, yAxis: 3 }
+              { type: 'max', name: 'Max' },
+              { type: 'min', name: 'Min' }
             ]
           },
           markLine: {

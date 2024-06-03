@@ -44,6 +44,37 @@ class Dashboard {
       chartName: 'planning-graph',
     }
   }
+
+  async getFoodGraphOptions(schoolId) {
+    const { food } = await Request.get('/dashboard-food', { schoolId });
+    const data = {
+      labels: [],
+      sobralimpa: [],
+      sobrasuja: [],
+      restoingesta: [],
+    }
+    food.forEach(row => {
+      data.labels.push(DateHandler.formatStrLocale(row.MES_ANO, { from: 'MM/yyyy', to: 'MMM/yy' }));
+      data.sobralimpa.push(row.SOBRALIMPA);
+      data.sobrasuja.push(row.SOBRASUJA);
+      data.restoingesta.push(row.RESTOINGESTA);
+    });
+    return {
+      chartName: 'food-graph',
+      labels: data.labels,
+      series: [
+        {
+          name: 'Sobra Limpa',
+          data: data.sobralimpa,
+        },
+        {
+          name: 'Sobra Suja',
+          data: data.sobrasuja,
+        },
+      ]
+    }
+  }
 }
 
+new Dashboard().getFoodGraphOptions();
 export default new Dashboard();

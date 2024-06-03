@@ -10,6 +10,7 @@ return function (App $app) {
     // $app->get('/smtp', [\App\Controller\Login::class, 'sendOneTimePasswordMail']);
 
     $app->get('/dashboard', [\App\Controller\Dashboard::class, 'getPlanning']);
+    $app->get('/dashboard-food', [\App\Controller\Dashboard::class, 'getFoodData']);
 
     $app->post('/user', [\App\Controller\User::class, 'create']);
     $app->get('/user', [\App\Controller\User::class, 'read']);

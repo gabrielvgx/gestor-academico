@@ -5,7 +5,7 @@
         <div class="text-subtitle-1">Escola</div>
         <v-select
           v-model="formData.schoolId"
-          @update:modelValue="refreshPlanningGraph"
+          @update:modelValue="() => {refreshPlanningGraph(); refreshFoodGraph();}"
           :items="formData.schools"
           item-title="NMESCOLA"
           :rules="rules"
@@ -29,7 +29,10 @@
         :options="planningOptions"
         @onSelect="onSelectPlanning"
       />
-      <Bar v-if="isSupervisor" :options="{chartName: 'food-graph'}" ></Bar>
+      <Bar
+        v-if="loadedFood && isSupervisor"
+        :options="foodOptions"
+      />
     </div>
     <Modal v-if="false" :modal="{}"></Modal>
   </v-container>
@@ -71,13 +74,17 @@ export default {
   },
   setup() {
     const planningOptions = ref({});
+    const foodOptions = ref({});
     const loadedPlanning = ref(false);
+    const loadedFood = ref(false);
     const loadingSchool = ref(false);
     const formData = ref({
       schoolId: null,
       schools: [],
       period: [],
     });
+    const userProfile = Token.getUserProfile();
+    const isSupervisor = userProfile === 'SUPERVISOR';
     const defaultPeriod = (() => {
       const nextMonth = new Date().getMonth() + 1;
       const startDate = new Date(new Date().getFullYear(), nextMonth, 1);
@@ -103,6 +110,16 @@ export default {
         });
       }
     }
+    const refreshFoodGraph = () => {
+      console.log(isSupervisor, formData.value.schoolId);
+      if (isSupervisor && formData.value.schoolId) {
+        DashboardController.getFoodGraphOptions(formData.value.schoolId).then((data) => {
+          console.log(data);
+          foodOptions.value = data;
+          loadedFood.value = true;
+        });
+      }
+    }
     loadingSchool.value = true;
     School.list().then(data => {
       formData.value.schools = data;
@@ -111,8 +128,6 @@ export default {
         refreshPlanningGraph();
       }
     }).finally(() => loadingSchool.value = false);
-    const userProfile = Token.getUserProfile();
-    const isSupervisor = userProfile === 'SUPERVISOR';
     const route = useRoute();
     const router = useRouter();
     if (route.path === '/dashboard' && userProfile === 'KITCHEN') {
@@ -122,9 +137,12 @@ export default {
       formData,
       loadingSchool,
       loadedPlanning,
+      foodOptions,
+      loadedFood,
       planningOptions,
       defaultPeriod,
       refreshPlanningGraph,
+      refreshFoodGraph,
       isSupervisor,
       rules: [
         Rule.required(),
