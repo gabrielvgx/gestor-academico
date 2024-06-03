@@ -26,11 +26,11 @@ SQL,
       'DSB_PLANNING' => <<<SQL
         WITH RECURSIVE dates AS (
           SELECT
-            CAST('2024-05-01' AS DATE) AS data
+            CAST(? AS DATE) AS data
           UNION ALL
           SELECT DATE_SUB(DATE_ADD(data, INTERVAL 7 DAY), INTERVAL WEEKDAY(DATE_ADD(data, INTERVAL 7 DAY)) DAY)
           FROM dates
-          WHERE data <= '2024-05-31'
+          WHERE data <= ?
         )
         SELECT
           DATE_FORMAT(data, '%d/%m/%Y') AS DTINICIAL,
@@ -54,8 +54,8 @@ SQL,
             SELECT data
             FROM dates
             WHERE DAYOFWEEK(data) = 2
-            AND MONTH(data) >= MONTH('2024-04-01')
-            AND MONTH(data) <= MONTH('2024-05-31')
+            AND MONTH(data) >= MONTH(?)
+            AND MONTH(data) <= MONTH(?)
         ) AS MONDAYS
         CROSS JOIN TURMA T
         INNER JOIN ESCOLA E
@@ -66,6 +66,7 @@ SQL,
           AND P.IDTURMA = T.ID
         LEFT JOIN USUARIO U
           ON P.IDUSERINCLUSAO = U.ID
+        WHERE E.ID = ?
 SQL,
       'READ_MATERIAL' => "SELECT ID, NMMATERIAL, DSMATERIAL FROM MATERIAL",
       'READ_SCHOOL' => <<<SQL

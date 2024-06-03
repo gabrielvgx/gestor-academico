@@ -1,5 +1,5 @@
 <template>
-  <div class="text-subtitle-1" :class="!disabledField && 'required'">{{ label }}</div>
+  <div class="text-subtitle-1">{{ label }}</div>
   <v-locale-provider locale="BR">
     <v-menu v-model="isMenuOpen" :close-on-content-click="false">
       <template v-slot:activator="{ props }">
@@ -7,9 +7,7 @@
           :model-value="formattedDate"
           readonly
           density="compact"
-          :disabled="disabledField"
           variant="outlined"
-          :hint="planningDate.length && isThisWeek(planningDate[0]) ? 'Semana Atual' : ''"
           persistent-hint
           clearable
           @click:clear="clearSelectedDates"
@@ -18,12 +16,12 @@
         />
       </template>
       <v-date-picker
-        v-model="planningDate"
+        v-model="selectedDates"
         color="primary"
         hide-header
         multiple
         show-adjacent-months
-        :min="getMinDate()"
+
         :max="getMaxDate()"
         :allowed-dates="allowedDates"
         @update:modelValue="onChangeDate"
@@ -38,12 +36,11 @@ import { ref } from 'vue';
 import {
   format,
   add,
-  previousMonday,
   nextMonday,
-  isMonday,
-  isFriday,
-  isWeekend,
   isThisWeek,
+  isWeekend,
+  isAfter,
+  isBefore,
 } from 'date-fns'
 import Rule from '@/util/Rule';
 
@@ -52,11 +49,11 @@ export default {
   emits: ['change'],
   computed: {
     formattedDate() {
-      if (this.planningDate.length === 0) {
+      if (this.selectedDates.length === 0) {
         return '';
       }
-      const [ startDate ] = this.planningDate;
-      const endDate = this.planningDate[this.planningDate.length - 1];
+      const [ startDate ] = this.selectedDates;
+      const endDate = this.selectedDates[this.selectedDates.length - 1];
       const formattedStart = format(startDate, 'dd/MM/yyyy');
       const formattedEnd = format(endDate, 'dd/MM/yyyy');
       return `${formattedStart} - ${formattedEnd}`;
@@ -71,46 +68,48 @@ export default {
       return format(nextMonday(new Date()), 'yyyy-MM-dd');
     },
     clearSelectedDates() {
-      this.planningDate = [];
+      this.selectedDates = [];
       this.$emit('change', { dates: []});
-    },
-    getFormattedNow() {
-      return format(new Date(), 'yyyy-MM-dd');
     },
     allowedDates(value) {
       return !isWeekend(value);
     },
     onChangeDate(value) {
-      const selectedDate = value.pop();
-      let startDate;
-      const selectedDates = []
-      if (isMonday(selectedDate)) {
-        startDate = selectedDate;
-      } else {
-        startDate = previousMonday(selectedDate);
+      if (this.selectedDates.length === 2) {
+        let [start, end] = this.selectedDates;
+        if (isAfter(start, end)) {
+          let aux = start;
+          start = end;
+          end = aux;
+        }
+        let curDate = start;
+        this.selectedDates = [start];
+        do {
+          curDate = add(curDate, { days: 1 });
+          if (this.allowedDates(curDate) && isBefore(curDate, end)) {
+            this.selectedDates.push(curDate);
+            console.log(curDate);
+          }
+        } while (isBefore(curDate, end));
+        this.selectedDates.push(end);
+      } else if (this.selectedDates.length > 2) {
+        const curValue = value.pop();
+        this.selectedDates = [curValue];
       }
-      selectedDates.push(startDate);
-      let curDate = startDate;
-      while (!isFriday(curDate)) {
-        curDate = add(curDate, { days: 1 });
-        selectedDates.push(curDate);
-      }
-      this.planningDate = selectedDates;
-      this.$emit('change', { dates: selectedDates });
-      this.isMenuOpen = false;
-    },
+      this.$emit('change', { selectedDates: this.selectedDates });
+    }
   },
   setup(props) {
     const label = ref(props.options.label);
     const isMenuOpen = ref(false);
-    const planningDate = ref(props.options.value || []);
+    const selectedDates = ref(props.options.value || []);
     const rules = [Rule.required()];
     const disabled = props.disabled || false;
 
     return {
       label,
       isMenuOpen,
-      planningDate,
+      selectedDates,
       isThisWeek,
       rules,
       disabledField: disabled,

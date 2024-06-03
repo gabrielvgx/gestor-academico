@@ -69,7 +69,6 @@ export default {
       this.dialog = false;
     },
     openNotification({ action }) {
-      console.log(action);
       if (action.name === 'notification') {
         EventModule.emit('openNotificationBar');
       }

@@ -1,4 +1,5 @@
 import Request from "@/util/Request";
+import DateHandler from '@/util/DateHandler';
 
 class Dashboard {
   getStatusByKey(key) {
@@ -17,8 +18,11 @@ class Dashboard {
       }
     })[key]
   }
-  async getPlanningGraphOptions() {
-    const { planning } = await Request.get('/dashboard');
+  async getPlanningGraphOptions(schoolId, period) {
+    const [ start, end ] = period;
+    const startDate = DateHandler.formatDate(start, { to: 'yyyy-MM-dd' });
+    const endDate = DateHandler.formatDate(end, { to: 'yyyy-MM-dd' });
+    const { planning } = await Request.get('/dashboard', { schoolId, startDate, endDate });
     const labels = [];
     const colors = [];
     const data = Object.keys(planning.analytic).map(key => {

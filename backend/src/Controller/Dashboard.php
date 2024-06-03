@@ -5,14 +5,16 @@ use App\Provider\Dashboard as DashboardProvider;
 use App\Util\ResponseHandler;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use App\Util\Mail;
 
 class Dashboard {
 
     public function getPlanning(Request $request, Response $response) {
       try {
-        // $params = $request->getParsedBody();
-        $result = DashboardProvider::getPlanning(null, null);
+        $params = $request->getQueryParams();
+        $schoolId = $params['schoolId'];
+        $startDate = $params['startDate'];
+        $endDate = $params['endDate'];
+        $result = DashboardProvider::getPlanning([$startDate, $endDate, $startDate, $endDate, $schoolId]);
 
         // if (!$result) {
         //   throw new \Exception('FAIL_CREATE_USER');
