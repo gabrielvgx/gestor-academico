@@ -100,19 +100,21 @@ SQL,
       'DELETE_USER' => "DELETE FROM USUARIO WHERE ID = ?",
       'COUNT_PENDING_PLANNING' => <<<SQL
         SELECT
-          SUM(NRPLANEJAMENTO) AS NUM_PLANEJAMENTO
+            ROUND(COUNT(*) / 5) AS NUM_PLANEJAMENTO
         FROM (
-          SELECT
-            COUNT(*) AS NRPLANEJAMENTO
-          FROM
-          PLANEJAMENTO P
-          INNER JOIN USUARIOINSTITUICAO UI
-            ON P.IDESCOLA = UI.IDESCOLA
-            AND (UI.IDTURMA IS NULL OR P.IDTURMA = UI.IDTURMA)
-            AND UI.IDUSUARIO = ?
-          WHERE P.STATUS IN ('PENDENTE', 'REJEITADO')
-          GROUP BY WEEK(P.DTPLANO)
-        ) A
+            SELECT DISTINCT
+                P.DTPLANO
+            FROM
+                PLANEJAMENTO P
+            INNER JOIN USUARIOINSTITUICAO UI
+                ON P.IDESCOLA = UI.IDESCOLA
+                AND (UI.IDTURMA IS NULL OR P.IDTURMA = UI.IDTURMA)
+                AND UI.IDUSUARIO = ?
+            WHERE
+                P.STATUS IN ('PENDENTE', 'REJEITADO')
+        ) P
+        GROUP BY
+            YEARWEEK(P.DTPLANO)
 SQL,
       'GET_SCHOOL_COUNT' => <<<SQL
         SELECT
@@ -172,7 +174,7 @@ SQL,
             ON PL.IDTURMA = T.ID
           INNER JOIN USUARIO U
             ON PL.IDUSERINCLUSAO = U.ID
-          INNER JOIN BNCC
+          LEFT JOIN BNCC
             ON INSTR(PL.IDBNCC, CONCAT(';', BNCC.ID, ';')) <> 0
           INNER JOIN TURNO
             ON PL.IDTURNO = TURNO.ID

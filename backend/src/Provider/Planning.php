@@ -16,6 +16,7 @@ class Planning {
       return (new DB())->fetch(Query::get('GET_PLANNING'), $params);
     }
     $params[] = $userId;
+    
     return (new DB())->fetch(Query::get('GET_PLANNING_BY_USER'), $params);
   }
 

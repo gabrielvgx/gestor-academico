@@ -30,12 +30,15 @@ class Planning {
               $classId,
               $period['ID'],
               $period['DSATIVIDADE'],
-              RequestHandler::getUserId($request),
               $row['IDBNCC'],
+              RequestHandler::getUserId($request),
             ];
             PlanningProvider::create($rowToInsert);
           }
         }
+        return ResponseHandler::success($response, [
+          'message' => 'SUCCESS_SAVE',
+        ]);
       } catch(\Exception $err) {
         return ResponseHandler::error($response, $err);
       }
